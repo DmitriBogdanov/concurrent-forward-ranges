@@ -1,0 +1,138 @@
+# __________________________________ CONTENTS ___________________________________
+#
+#    'clang-format' configuration for version 21.1.3.
+#    
+#    Newer versions use a slightly different set of flags, in case of migration
+#    following tool will prove rather helpful: https://clang-format-configurator.site
+# _______________________________________________________________________________
+
+---
+BasedOnStyle: LLVM
+
+# Align consecutive stuff
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossComments: true
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossComments: true
+  PadOperators: true
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossComments: true
+  PadOperators: true
+  
+# Allow short blocks on a single line, e.g.
+#
+# > if (condition) invoke_action();
+#
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+
+# Always break `template <...>` onto a separate line
+AlwaysBreakTemplateDeclarations: Yes
+
+# Add spaces in brace initialization e.g. `{ x }` instead of `{x}`
+Cpp11BracedListStyle: false
+
+# Align pointers as `int* x`
+PointerAlignment: Left
+
+# Don't indent `public:` / `protected:` / `private:` specifiers inside of a class
+AccessModifierOffset: -4
+
+# Align arrays of structs / tuples to right, e.g.:
+#
+# > some_structure demo[] = {
+# >     { 56,    23, "hello" },
+# >     { -1, 93463, "world" },
+# >     {  7,     5,    "!!" }
+# > };
+#
+AlignArrayOfStructures: Right
+
+# Break long function declarations using a "one argument per line" style
+# with closing parenthesis & opening brace on a separate line, e.g.:
+#
+#    > void some_function(
+#    >     very_long_type_name argument_0 = {},
+#    >     very_long_type_name argument_1 = {},
+#    >     very_long_type_name argument_2 = {}
+#    > ) {
+#    >     // function body
+#    > }
+#
+AlignAfterOpenBracket: BlockIndent
+BinPackArguments: false
+BinPackParameters: false
+
+# For long function declarations declarations that don't fit on a single line, 
+# but do fit with all parameters on a separate line, don't do this:
+#
+# > void some_function(
+# >     very_long_type_name argument_0 = {}, very_long_type_name argument_1 = {}
+# > ) {}
+#
+# Use regular multi-line form instead:
+#
+# > void some_function(
+# >     very_long_type_name argument_0 = {},
+# >     very_long_type_name argument_1 = {}
+# > ) {}
+#
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# Increase penalty for separating function name from the return type, e.g. try to avoid cases like this:
+#
+# > [[noreturn]] NO_INLINE constexpr
+# > invoke_assertion_handler(string_view condition, source_location location) {}
+#
+# And instead favor trying to split arguments:
+#
+# > [[noreturn]] NO_INLINE constexpr invoke_assertion_handler(
+# >     string_view     condition,
+# >     source_location location
+# > ) {}
+#
+PenaltyReturnTypeOnItsOwnLine: 300
+
+# When breaking template parameters into multiple lines, place closing angle bracket onto a separate line, e.g.:
+#
+#    > template <
+#    >     class K,
+#    >     class V,
+#    >     class Alloc
+#    > >
+#    > struct range_closure {};
+#
+BreakBeforeTemplateCloser: true
+
+# Indent nested preprocessor directives, e.g.:
+#
+# > #ifdef _MSC_VER
+# >     #define TMC_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
+# > #else
+# >     #define TMC_NO_UNIQUE_ADDRESS [[no_unique_address]]
+# > #endif
+#
+IndentPPDirectives: BeforeHash
+
+# Don't reorder consecutive `using`
+SortUsingDeclarations: false
+
+# Leave empty lines before / after class access modifiers the way the were set by the user
+EmptyLineAfterAccessModifier: Leave
+EmptyLineBeforeAccessModifier: Leave
+
+# Trim excessive empty lines
+MaxEmptyLinesToKeep: 3
+
+# Insert empty line at the end if missing
+InsertNewlineAtEOF: true
+
+# Use standard column width & indent
+ColumnLimit: 120
+IndentWidth: 4
+TabWidth: 4

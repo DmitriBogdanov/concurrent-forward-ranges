@@ -1,0 +1,52 @@
+# --- Ignore everything ---
+
+*
+
+# --- Toolchain ---
+
+# Git
+!.gitignore
+!.gitattributes
+
+# CI / CD
+!.github/
+!.github/**
+
+# LLVM
+!.clang-format
+!.clang-tidy
+!.clangd
+
+# --- Build ---
+
+# CMake
+!CMakeLists.txt
+!CMakePresets.json
+
+# --- Docs ---
+
+# License
+!LICENSE.md
+
+# Toolchain
+!mkdocs.yml
+
+# Content
+!docs/
+!docs/**
+
+# Code
+
+# --- Code ---
+
+# Library
+!include/
+!include/**
+
+# Development
+!tests/
+!tests/**
+!examples/
+!examples/**
+!benchmarks/
+!benchmarks/**
