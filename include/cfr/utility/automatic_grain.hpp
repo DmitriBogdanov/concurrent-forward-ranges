@@ -18,7 +18,7 @@ struct automatic_grain_fn {
     
     template <class R>
         requires cfr::ranges::sizable_range<R>
-    [[nodiscard]] auto operator()( R && range ) const
+    [[nodiscard]] constexpr auto operator()( R && range ) const
         -> std::size_t
     {
         const std::size_t workers = cfr::this_task_arena::max_concurrency();

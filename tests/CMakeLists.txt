@@ -1,11 +1,14 @@
 # Create test target
 add_executable(cfr_ut
     "source/main.cpp"
+    
+    "source/utility/automatic_grain.cpp"
+    "source/utility/explicit_size.cpp"
 )
 
-target_compile_features   (cfr_ut PRIVATE ${TMC_COMPILE_FEATURES}              )
-target_compile_options    (cfr_ut PRIVATE ${TMC_TEST_COMPILER_FLAGS}           )
-target_link_options       (cfr_ut PRIVATE ${TMC_TEST_LINKER_FLAGS}             )
+target_compile_features   (cfr_ut PRIVATE ${CFR_COMPILE_FEATURES}              )
+target_compile_options    (cfr_ut PRIVATE ${CFR_TEST_COMPILER_FLAGS}           )
+target_link_options       (cfr_ut PRIVATE ${CFR_TEST_LINKER_FLAGS}             )
 target_include_directories(cfr_ut PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Link the main library
