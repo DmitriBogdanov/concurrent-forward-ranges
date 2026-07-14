@@ -5,7 +5,7 @@
 
 #pragma once
 
-// Content: Concept for ranges with computable size (possibly using explicit O(N) distance check).
+// Content: Concept for ranges with computable size (aka possibly using an explicit O(N) distance check).
 
 #include <ranges> // std::ranges::forward_range<>
 
