@@ -7,9 +7,8 @@
 
 // Content: Niebloid for automatically estimating a reasonable grain size for a range.
 
-#include <tbb/task_arena.h> // tbb::this_task_arena::max_concurrency()
-
-#include <cfr/utility/explicit_size.hpp> // cfr::ranges::explicit_size
+#include <cfr/utility/explicit_size.hpp>   // cfr::ranges::explicit_size
+#include <cfr/utility/max_concurrency.hpp> // cfr::this_task_arena::max_concurrency
 
 namespace cfr::ranges {
 
@@ -22,7 +21,7 @@ struct automatic_grain_fn {
     [[nodiscard]] auto operator()( R && range ) const
         -> std::size_t
     {
-        const std::size_t workers = std::size_t( tbb::this_task_arena::max_concurrency() );
+        const std::size_t workers = cfr::this_task_arena::max_concurrency();
             // in case task arena is not yet initialized, TBB will try to return hardware concurrency
         
         const std::size_t tasks = workers * tasks_per_worker;
@@ -32,7 +31,7 @@ struct automatic_grain_fn {
             // fallback onto O( N ). Algorithm / adapter APIs are protected against falling into this 
             // branch implicitly so we only perform O( N ) check if the user explicitly requests it.
         
-        return estimate > 0 ? estimate : 1;
+        return estimate ? estimate : std::size_t( 1 );
             // TBB makes a choice of defaulting grain size to `1` (assuming we use `tbb::blocked_range`),
             // this is generally a good choice assuming recursively splittable ranges with auto partitioner,
             // however this makes it easy to accidentally wreck the performance of deterministic algorithms
