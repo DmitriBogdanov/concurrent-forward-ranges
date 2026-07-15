@@ -24,20 +24,17 @@ jobs:
           
       - name: "Clone TBB"
         run: git clone -b 'v2023.1.0' --single-branch https://github.com/uxlfoundation/oneTBB.git
-        
+      
       - name: "Build TBB"
         run: |
-          cd    oneTBB
-          mkdir build
-          cd    build
-          cmake -DTBB_TEST=OFF ..
-          cmake --build .
-          
+          cd oneTBB
+          cmake -S . -B build -DTBB_TEST=OFF ..
+          cmake --build build
+      
       - name: "Install TBB"
         run: |
           cd oneTBB
-          cd build
-          cmake --install .
+          cmake --install build --prefix lib_tbb_install
           
       - name: "Configure CMake"
         run: cmake --preset gcc
