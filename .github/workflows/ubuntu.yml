@@ -30,7 +30,7 @@ jobs:
       - name: "Build TBB"
         run: |
           cd $HOME/oneTBB
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$HOME/.local -DTBB_TEST=OFF ..
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$HOME/.local -DTBB_TEST=OFF
           cmake --build build
           
       - name: "Install TBB"

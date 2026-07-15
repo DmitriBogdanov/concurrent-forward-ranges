@@ -14,7 +14,7 @@
             "hidden": true,
             "binaryDir": "build/",
             "cacheVariables": {
-                "TMC_COMPILE_FEATURES": "cxx_std_23"
+                "CFR_COMPILE_FEATURES": "cxx_std_23"
             }
         },
         {
@@ -23,8 +23,8 @@
             "inherits": [ "base" ],
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "g++",
-                "TMC_TEST_COMPILER_FLAGS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "TMC_TEST_LINKER_FLAGS": "-fsanitize=address,undefined"
+                "CFR_TEST_COMPILER_FLAGS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "CFR_TEST_LINKER_FLAGS": "-fsanitize=address,undefined"
             }
         },
         {
@@ -33,8 +33,8 @@
             "inherits": [ "base" ],
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "clang++",
-                "TMC_TEST_COMPILER_FLAGS": "-stdlib=libc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "TMC_TEST_LINKER_FLAGS": "-stdlib=libc++;-fsanitize=address,undefined"
+                "CFR_TEST_COMPILER_FLAGS": "-stdlib=libc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "CFR_TEST_LINKER_FLAGS": "-stdlib=libc++;-fsanitize=address,undefined"
             }
         },
         {
@@ -44,8 +44,8 @@
             "cacheVariables": {
                 "CMAKE_CXX_FLAGS_DEBUG": "",
                 "CMAKE_CXX_FLAGS_RELEASE": "",
-                "TMC_TEST_COMPILER_FLAGS": "/W4;/sdl;/WX;/DEBUG;/Zi;/RTC1;/permissive-;/Zc:preprocessor",
-                "TMC_TEST_LINKER_FLAGS": ""
+                "CFR_TEST_COMPILER_FLAGS": "/W4;/sdl;/WX;/DEBUG;/Zi;/RTC1;/permissive-;/Zc:preprocessor",
+                "CFR_TEST_LINKER_FLAGS": ""
             }
         }
     ],
