@@ -5,17 +5,14 @@ Summary of the [official installation guide](https://github.com/uxlfoundation/on
 **Prerequisites:** [CMake 3.5+](https://cmake.org/)
 
 ```bash
-# Clone TBB sources
+# Clone
 git clone https://github.com/uxlfoundation/oneTBB.git
-cd oneTBB
 
 # Build
-mkdir build
-cd    build
-
-cmake -DTBB_TEST=OFF ..
-cmake --build .
+cd $oneTBB
+cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$HOME/.local/tbb -DTBB_TEST=OFF
+cmake --build build
 
 # Install
-sudo make install
+cmake --install build
 ```
