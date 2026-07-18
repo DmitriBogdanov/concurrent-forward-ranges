@@ -20,7 +20,7 @@ jobs:
     
     steps:
       - name: "Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
           
       - name: "Configure CMake"
         run: cmake --preset gcc
@@ -32,12 +32,14 @@ jobs:
         run: ctest --preset gcc
         
       - name: "Upload test artifacts"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: "artifact-${{matrix.os}}-${{matrix.cxx}}"
+          name: "${{RUNNER_OS}}-artifacts-${{GITHUB_RUN_ID}}"
           path: |
             build/
             !build/benchmarks/
             !build/examples/
             !build/tests/
+            !build/_deps/
+            !build/**/*libtbb*

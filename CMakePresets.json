@@ -1,11 +1,7 @@
 {
     "version": 3,
     
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 21,
-        "patch": 0
-    },
+    "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
     
     "configurePresets": [
         {
@@ -22,9 +18,9 @@
             "description": "GCC configuration variables.",
             "inherits": [ "base" ],
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "g++",
-                "CFR_TEST_COMPILER_FLAGS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "CFR_TEST_LINKER_FLAGS": "-fsanitize=address,undefined"
+                "CMAKE_CXX_COMPILER"      : "g++",
+                "CFR_TEST_COMPILE_OPTIONS": "-stdlib=libstdc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "CFR_TEST_LINK_OPTIONS"   : "-stdlib=libstdc++;-fsanitize=address,undefined"
             }
         },
         {
@@ -32,9 +28,9 @@
             "description": "Clang configuration variables.",
             "inherits": [ "base" ],
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++",
-                "CFR_TEST_COMPILER_FLAGS": "-stdlib=libc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "CFR_TEST_LINKER_FLAGS": "-stdlib=libc++;-fsanitize=address,undefined"
+                "CMAKE_CXX_COMPILER"      : "clang++",
+                "CFR_TEST_COMPILE_OPTIONS": "-stdlib=libc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "CFR_TEST_LINK_OPTIONS"   : "-stdlib=libc++;-fsanitize=address,undefined"
             }
         },
         {
@@ -42,10 +38,10 @@
             "description": "MSVC configuration variables.",
             "inherits": [ "base" ],
             "cacheVariables": {
-                "CMAKE_CXX_FLAGS_DEBUG": "",
-                "CMAKE_CXX_FLAGS_RELEASE": "",
-                "CFR_TEST_COMPILER_FLAGS": "/W4;/sdl;/WX;/DEBUG;/Zi;/RTC1;/permissive-;/Zc:preprocessor",
-                "CFR_TEST_LINKER_FLAGS": ""
+                "CMAKE_CXX_FLAGS_DEBUG"   : "",
+                "CMAKE_CXX_FLAGS_RELEASE" : "",
+                "CFR_TEST_COMPILE_OPTIONS": "/W4;/sdl;/WX;/DEBUG;/Zi;/RTC1;/permissive-;/Zc:preprocessor",
+                "CFR_TEST_LINK_OPTIONS"   : ""
             }
         }
     ],
@@ -57,9 +53,9 @@
             "hidden": true,
             "jobs": 6
         },
-        { "name": "gcc"      , "configurePreset": "gcc"      , "inherits": [ "base" ] },
-        { "name": "clang"    , "configurePreset": "clang"    , "inherits": [ "base" ] },
-        { "name": "msvc"     , "configurePreset": "msvc"     , "inherits": [ "base" ] }
+        { "name": "gcc"  , "configurePreset": "gcc"  , "inherits": [ "base" ] },
+        { "name": "clang", "configurePreset": "clang", "inherits": [ "base" ] },
+        { "name": "msvc" , "configurePreset": "msvc" , "inherits": [ "base" ] }
     ],
     
     "testPresets": [
@@ -74,8 +70,8 @@
                 "timeout": 60
             }
         },
-        { "name": "gcc"      , "configurePreset": "gcc"      , "inherits": [ "base" ] },
-        { "name": "clang"    , "configurePreset": "clang"    , "inherits": [ "base" ] },
-        { "name": "msvc"     , "configurePreset": "msvc"     , "inherits": [ "base" ] }
+        { "name": "gcc"  , "configurePreset": "gcc"  , "inherits": [ "base" ] },
+        { "name": "clang", "configurePreset": "clang", "inherits": [ "base" ] },
+        { "name": "msvc" , "configurePreset": "msvc" , "inherits": [ "base" ] }
     ]
 }
