@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: "${{RUNNER_OS}}-artifacts-${{GITHUB_RUN_ID}}"
+          name: "${{ runner.os }}-${{ runner.arch }}-artifacts-${{ github.run_id }}"
           path: |
             build/
             !build/benchmarks/
