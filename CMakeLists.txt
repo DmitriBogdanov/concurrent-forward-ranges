@@ -1,30 +1,38 @@
-cmake_minimum_required(VERSION 3.21.0...3.22.1)
+cmake_minimum_required( VERSION 3.21.0...3.22.1 )
 
-project(
-    CFR
-    VERSION       0.21.0
-    DESCRIPTION  "Comprehensive container library for C++23"
-    HOMEPAGE_URL "https://github.com/DmitriBogdanov/too-many-containers"
+project( cfr
+    VERSION       0.1.0
+    DESCRIPTION  "Concurrent range algorithms for C++23"
+    HOMEPAGE_URL "https://github.com/DmitriBogdanov/concurrent-forward-ranges"
 )
 
-# Find TBB
-find_package(TBB)
+# Fetch TBB
+
+include( cmake/CPM.cmake )
+
+set( TBB_TEST     OFF CACHE BOOL "Disable TBB tests    to speed up build" FORCE )
+set( TBB_EXAMPLES OFF CACHE BOOL "Disable TBB examples to speed up build" FORCE )
+
+CPMAddPackage( "gh:uxlfoundation/oneTBB#v2023.1.0" )
 
 # Create library target
-add_library(cfr INTERFACE)
 
-target_include_directories(cfr INTERFACE "${PROJECT_SOURCE_DIR}/include")
-target_compile_features   (cfr INTERFACE cxx_std_23                     )
-target_link_libraries     (cfr INTERFACE TBB::tbb                       )
+add_library( "${PROJECT_NAME}" INTERFACE )
 
-add_library(concurrent-forward-ranges ALIAS cfr)
+target_include_directories( "${PROJECT_NAME}" INTERFACE "${PROJECT_SOURCE_DIR}/include" )
+target_compile_features   ( "${PROJECT_NAME}" INTERFACE "${CFR_COMPILE_FEATURES}"       )
+target_link_libraries     ( "${PROJECT_NAME}" INTERFACE TBB::tbb                        )
 
-# Project is top-level => build benchmarks & tests
-if("${CMAKE_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}")
+add_library( "${PROJECT_NAME}::lib" ALIAS "${PROJECT_NAME}" )
 
-    include(CTest)
-    enable_testing() # should be called before adding directories with tests
+# Project is top-level => build tests, benchmarks and examples
+
+if( "${CMAKE_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}" )
+
+    include( CTest )
     
-    add_subdirectory("tests")
+    enable_testing() # should be invoked before adding test directories
+    
+    add_subdirectory( "tests" )
     
 endif()
