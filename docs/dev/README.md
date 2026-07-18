@@ -4,7 +4,13 @@
 
 The core feature of this library is its first class support of "bad" iterator types that mostly get ignored by existing concurrency frameworks.
 
-The library relies on OneTBB as its parallelism backend due to its wide industry adoption, in many codebases TBB is a de-facto standard way of concurrent execution with special tools developed specifically for its threads and task arenas.
+The library relies on OneTBB as its parallelism backend due to its wide industry adoption, in many codebases TBB is a de-facto standard way of concurrent execution with special tools developed specifically for its threads, ranges and task arenas.
+
+> [!Tip]
+> Use GitHub's built-in [table of contents](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) to navigate this page.
+
+> [!Tip]
+> Usage examples can be found [below](#basic-examples). Full API documentation can be found the [website]().
 
 ## Accepted ranges
 
@@ -16,15 +22,29 @@ Most `cfr` algorithms can operate on 3 kinds of ranges:
 
 Additionally, all ranges are required to be bounded and forward-iterable to allow multiple passes.
 
-Any range that doesn't belong to one of these categories (aka any general range like `std::list`) can be automatically adapted using `cfr::adapt( range )` helper.
+Any range that doesn't belong to one of these categories (aka any general range like `std::list` or `boost::unordered_flat_map`) can be automatically adapted using `cfr::adapt( range )` helper.
 
 This is a significantly relaxed requirement compared to most parallel STL implementations which tend to ignore parallel execution policies unless given range provides random access. Additionally, even if forward range parallelization is supported, there is usually no way of providing an explicit grain size, thread count and chunking strategy, which are all crucial parts of getting robust performance characteristics outside of trivial examples.
 
-## Design guarantees
+## Ranges in relation to parallelism
 
-- All algorithms can be executed in `constexpr` context
-- All algorithms, concepts and helper functions follow the naming convention and style of their standard counterparts
+Range is an **inherently more powerful abstraction** than a corresponding pair of iterators, a range can carry its:
+
+- Size
+- Grain
+- Subdivision strategy
+- Arbitrary payload
+
+This allows parallel range algorithms to extend beyond the trivial index-based random access approach usually taken with iterators.
+
+With ranges and lazy projections we can construct entire parallel evaluation pipelines while making use of concise C++20 syntax and still keep the ability to adjust execution details through the parameters of the range itself. Additionally, parallel algorithms highly benefit from the fact that most ranges in the wild have an `O( 1 )` size, even through their iterator pair don't support `O( 1 )` difference (this applies to the overwhelming majority of containers).
+
+## Implementation design choices
+
+- All algorithms (and other library functionality) can be evaluated in `constexpr` context
+- All algorithms, concepts and helper functions follow the naming conventions and style of their standard counterparts
 - Output iterators are replaced with output ranges to enable concurrent writing
+- All API is constrained through appropriate concepts
 
 ## Customizing grain
 
@@ -98,9 +118,21 @@ Note that return type of `chunk()` doesn't have to match the original range. We 
 
 To adapt arbitrary range explicitly into a chunkable one use `cfr::views::chunkable_adaptor( range, grain )`.
 
-The cost of parallelization when using this general-case adaptor is an additional `O( N )` iteration pass (so we can distribute initial tasks). Assuming the workload per iteration is higher than the cost of iteration itself (which is usually the case) we can get decently large benefit even when working with exceedingly "bad" ranges such as `std::list`.
+The cost of parallelization when using this general-case adaptor is an additional `O( N )` iteration pass (so we can distribute initial tasks). Assuming the workload per iteration is higher than the cost of iteration itself (which is usually the case) we can still get a decently large benefit even when working with exceedingly "bad" ranges such as `std::list`.
 
 ## Basic Examples
+
+### Concurrent transform-reduce
+
+```cpp
+const auto range = std::list{ 2., 4., 7., 8., 9. };
+
+const auto projection = []( double x ) { return std::exp( std::cos( x ) ); };
+
+const auto product = cfr::ranges::reduce( cfr::adapt( range ), 1., std::multiplies{}, projection );
+
+// Note: C++20 projections make `std::transform_reduce` as a separate algorithm obsolete
+```
 
 ## Advanced examples
 
@@ -110,7 +142,7 @@ The cost of parallelization when using this general-case adaptor is an additiona
 auto source = std::unordered_set<int>( { 0, 1, 2, 3 } );
 auto target = std::vector       <int>(  source.size() );
 
-cfr::ranges::move( source, target );
+cfr::ranges::move( cfr::adapt( source ), target );
 ```
 
 ### Concurrently & deterministically collect values satisfying a predicate into `std::vector`
@@ -143,35 +175,62 @@ cfr::ranges::sort( range, {}, std::ranges::lexicographic_compare );
 ```cpp
 auto source = std::vector<std::vector<int>>( { { 0, 2 }, { 5, 4, 3, 7 }, { 1, 3, 9 } } );
 
-const auto flattened_size = cfr::ranges::reduce( source, 0, std::plus{}, std::ranges::size );
+const auto flattened_size = cfr::ranges::reduce( source, 0uz, std::plus{}, std::ranges::size );
 
 auto target = std::vector<int>( flattened_size );
 
-cfr::ranges::scan( source, 0, std::plus{}, []( auto && prefix, auto && value ) {
-    target[prefix] = std::move( value );
-}, std::ranges::size );
+cfr::ranges::scan( source, 0uz, std::plus{}, std::ranges::size, []( auto && prefix, auto && subrange ) {
+    std::ranges::move( subrange, std::ranges::next( std::ranges::begin( target ), prefix ) );
+} );
 ```
 
-## Installing TBB
+## Building with CMake
 
-OneTBB is quite easy to build from source, after running the install `find_package(TBB)` will become available in CMake with alias target `TBB::tbb`:
+### Regular build
 
-**Prerequisites:** [CMake 3.5+](https://cmake.org/)
+The library is header only, as such it exposes an `INTERFACE` target, linking is as simple as:
 
-```bash
-# Clone
-git clone https://github.com/uxlfoundation/oneTBB.git
+```cmake
+add_subdirectory( concurrent-forward-ranges )
 
-# Build
-cd oneTBB
-cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$HOME/.local/tbb -DTBB_TEST=OFF
-cmake --build build
-
-# Install
-cmake --install build
+target_link_libraries( my_project PRIVATE cfr::lib )
 ```
 
-It's also provided by most package managers. For additional details refer to the [official documentation](https://www.intel.com/content/www/us/en/docs/onetbb/get-started-guide/2023-0/install-on-linux.html) or [GitHub repo](https://github.com/uxlfoundation/oneTBB/blob/master/INSTALL.md).
+TBB dependency is fetched **automatically** using [CMake CPM](https://github.com/cpm-cmake/cpm.cmake), no further action is required on user side.
+
+### Offline build
+
+For offline builds CPM provides an option to search for the locally installed package instead, simply define
+
+```cmake
+set( CPM_USE_LOCAL_PACKAGES ON )
+```
+
+And the library will look for local `find_package( TBB )` instead.
+
+### Fetch from the GitHub
+
+To download the library automatically use CMake [`FetchContent()`](https://cmake.org/cmake/help/latest/module/FetchContent.html).
+
+```cmake
+include( FetchContent )
+
+FetchContent_Declare(
+    CFR
+    GIT_REPOSITORY https://github.com/DmitriBogdanov/concurrent-forward-ranges.git
+    GIT_TAG        v0.1.0
+)
+
+FetchContent_MakeAvailable( CFR )
+```
+
+Or, alternatively, do the same with [CMake CPM](https://github.com/cpm-cmake/cpm.cmake):
+
+```cpp
+include( cmake/CPM.cmake )
+
+CPMAddPackage( "gh:DmitriBogdanov/concurrent-forward-ranges#v0.1.0" )
+```
 
 ## License
 
