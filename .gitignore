@@ -20,6 +20,8 @@
 # --- Build ---
 
 # CMake
+!cmake/
+!cmake/**
 !CMakeLists.txt
 !CMakePresets.json
 
