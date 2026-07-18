@@ -19,8 +19,8 @@
             "inherits": [ "base" ],
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER"      : "g++",
-                "CFR_TEST_COMPILE_OPTIONS": "-stdlib=libstdc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "CFR_TEST_LINK_OPTIONS"   : "-stdlib=libstdc++;-fsanitize=address,undefined"
+                "CFR_TEST_COMPILE_OPTIONS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "CFR_TEST_LINK_OPTIONS"   : "-fsanitize=address,undefined"
             }
         },
         {
