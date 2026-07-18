@@ -10,10 +10,11 @@ project( cfr
 
 include( cmake/CPM.cmake )
 
-set( TBB_TEST     OFF CACHE BOOL "Disable TBB tests    to speed up build" FORCE )
-set( TBB_EXAMPLES OFF CACHE BOOL "Disable TBB examples to speed up build" FORCE )
-
-CPMAddPackage( "gh:uxlfoundation/oneTBB#v2023.1.0" )
+CPMAddPackage(
+    URI     "gh:uxlfoundation/oneTBB#v2023.1.0"
+    NAME    TBB
+    OPTIONS "TBB_TEST OFF" "TBB_EXAMPLES OFF"
+)
 
 # Create library target
 
