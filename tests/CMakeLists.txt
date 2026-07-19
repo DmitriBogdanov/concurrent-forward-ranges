@@ -1,34 +1,43 @@
-# Create target
+# Create unit test target
 
-add_executable( "${PROJECT_NAME}_ut"
-    "source/main.cpp"
+add_executable( ${DEV_UNIT_TEST_TARGET}
+
+    "${DEV_UNIT_TEST_SOURCES}/main.cpp"
     
-    "source/adaptor/chunkable.cpp"
-    "source/adaptor/divisible.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/adaptor/chunkable.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/adaptor/divisible.cpp"
     
-    "source/utility/automatic_grain.cpp"
-    "source/utility/explicit_size.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/utility/automatic_grain.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/utility/explicit_size.cpp"
 )
 
-target_compile_features   ( "${PROJECT_NAME}_ut" PRIVATE "${CFR_COMPILE_FEATURES}"            )
-target_compile_options    ( "${PROJECT_NAME}_ut" PRIVATE "${CFR_TEST_COMPILE_OPTIONS}"        )
-target_link_options       ( "${PROJECT_NAME}_ut" PRIVATE "${CFR_TEST_LINK_OPTIONS}"           )
-target_include_directories( "${PROJECT_NAME}_ut" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories( ${DEV_UNIT_TEST_TARGET} PRIVATE ${DEV_UNIT_TEST_HEADERS}     )
+target_compile_features   ( ${DEV_UNIT_TEST_TARGET} PRIVATE ${DEV_UNIT_TEST_OPTIONS}     )
+target_compile_options    ( ${DEV_UNIT_TEST_TARGET} PRIVATE ${UNIT_TEST_COMPILE_OPTIONS} )
+target_link_options       ( ${DEV_UNIT_TEST_TARGET} PRIVATE ${UNIT_TEST_LINKAGE_OPTIONS} )
 
-# Link dependencies
 
-target_link_libraries( "${PROJECT_NAME}_ut" PRIVATE "${PROJECT_NAME}::lib" "doctest::doctest" )
+# Fetch unit test dependencies
 
-# Copy TBB DDLs
+CPMAddPackage(
+    URI  "gh:doctest/doctest#v2.5.3"
+    NAME "doctest"
+)
 
-add_custom_command( TARGET "${PROJECT_NAME}_ut" POST_BUILD
+target_link_libraries( ${DEV_UNIT_TEST_TARGET} PRIVATE ${DEV_INTERFACE_TARGET} doctest::doctest )
+
+
+# Copy shared libraries to executable directory (necessary to find TBB DLLs when compiling for Windows)
+
+add_custom_command( TARGET ${DEV_UNIT_TEST_TARGET} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     $<TARGET_FILE:TBB::tbb>
-    $<TARGET_FILE_DIR:cfr_ut>
+    $<TARGET_FILE_DIR:${DEV_UNIT_TEST_TARGET}>
 )
 
-# Register CTest
+
+# Register tests
 
 include( "${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake" )
 
-doctest_discover_tests( "${PROJECT_NAME}_ut" )
+doctest_discover_tests( ${DEV_UNIT_TEST_TARGET} )

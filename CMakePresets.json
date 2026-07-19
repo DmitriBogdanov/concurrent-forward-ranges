@@ -5,53 +5,50 @@
     
     "configurePresets": [
         {
-            "name": "base",
+            "name"       : "base",
             "description": "Common configuration variables.",
-            "hidden": true,
-            "binaryDir": "build/",
+            "binaryDir"  : "build/",
+            "hidden"     : true
+        },
+        {
+            "name"          : "gcc",
+            "description"   : "GCC configuration variables.",
+            "inherits"      : [ "base" ],
             "cacheVariables": {
-                "CFR_COMPILE_FEATURES": "cxx_std_23"
+                "CMAKE_CXX_COMPILER"       : "g++",
+                "UNIT_TEST_COMPILE_OPTIONS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "UNIT_TEST_LINKAGE_OPTIONS": "-fsanitize=address,undefined"
             }
         },
         {
-            "name": "gcc",
-            "description": "GCC configuration variables.",
-            "inherits": [ "base" ],
+            "name"          : "clang",
+            "description"   : "Clang configuration variables.",
+            "inherits"      : [ "base" ],
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER"      : "g++",
-                "CFR_TEST_COMPILE_OPTIONS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "CFR_TEST_LINK_OPTIONS"   : "-fsanitize=address,undefined"
+                "CMAKE_CXX_COMPILER"       : "clang++",
+                "UNIT_TEST_COMPILE_OPTIONS": "-stdlib=libc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "UNIT_TEST_LINKAGE_OPTIONS": "-stdlib=libc++;-fsanitize=address,undefined"
             }
         },
         {
-            "name": "clang",
-            "description": "Clang configuration variables.",
-            "inherits": [ "base" ],
-            "cacheVariables": {
-                "CMAKE_CXX_COMPILER"      : "clang++",
-                "CFR_TEST_COMPILE_OPTIONS": "-stdlib=libc++;-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
-                "CFR_TEST_LINK_OPTIONS"   : "-stdlib=libc++;-fsanitize=address,undefined"
-            }
-        },
-        {
-            "name": "msvc",
+            "name"       : "msvc",
             "description": "MSVC configuration variables.",
-            "inherits": [ "base" ],
+            "inherits"   : [ "base" ],
             "cacheVariables": {
-                "CMAKE_CXX_FLAGS_DEBUG"   : "",
-                "CMAKE_CXX_FLAGS_RELEASE" : "",
-                "CFR_TEST_COMPILE_OPTIONS": "/W4;/sdl;/WX;/DEBUG;/Zi;/RTC1;/permissive-;/Zc:preprocessor",
-                "CFR_TEST_LINK_OPTIONS"   : ""
+                "CMAKE_CXX_FLAGS_DEBUG"    : "",
+                "CMAKE_CXX_FLAGS_RELEASE"  : "",
+                "UNIT_TEST_COMPILE_OPTIONS": "/W4;/sdl;/WX;/DEBUG;/Zi;/RTC1;/permissive-;/Zc:preprocessor",
+                "UNIT_TEST_LINKAGE_OPTIONS": ""
             }
         }
     ],
     
     "buildPresets": [
         {
-            "name": "base",
+            "name"       : "base",
             "description": "Common build variables.",
-            "hidden": true,
-            "jobs": 6
+            "hidden"     : true,
+            "jobs"       : 6
         },
         { "name": "gcc"  , "configurePreset": "gcc"  , "inherits": [ "base" ] },
         { "name": "clang", "configurePreset": "clang", "inherits": [ "base" ] },
@@ -60,15 +57,11 @@
     
     "testPresets": [
         {
-            "name": "base",
+            "name"       : "base",
             "description": "CTest arguments",
-            "hidden": true,
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "timeout": 60
-            }
+            "hidden"     : true,
+            "output"     : { "outputOnFailure": true },
+            "execution"  : { "timeout"        : 60   }
         },
         { "name": "gcc"  , "configurePreset": "gcc"  , "inherits": [ "base" ] },
         { "name": "clang", "configurePreset": "clang", "inherits": [ "base" ] },
