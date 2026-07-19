@@ -1,0 +1,46 @@
+# __________________________________ CONTENTS ___________________________________
+#
+#    This is a workflow file for GitHub Actions that runs tests on Windows.
+#    The workflow is triggered automatically on every push or pull request.
+#    Run results are then archived as GitHub artifacts.
+#
+#    By default, Windows provides 'g++' which links 'libstdc++' stdlib.
+# _______________________________________________________________________________
+
+name: "Run tests: Windows"
+
+run-name: "Build & runs tests on Windows"
+
+on: [ push, pull_request ]
+
+jobs:
+  build-and-test:
+    
+    runs-on: windows-latest
+    
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v7
+          
+      - name: "Configure CMake"
+        run: cmake --preset msvc
+        
+      - name: "Build project"
+        run: cmake --build --preset msvc
+        
+      - name: "Run tests"
+        run: ctest --preset msvc -C Debug
+        # Visual Studio is a multi-configuration generator, we need to specify config for the run
+        
+      - name: "Upload test artifacts"
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: "${{ runner.os }}-${{ runner.arch }}-artifacts-${{ github.run_id }}"
+          path: |
+            build/
+            !build/benchmarks/
+            !build/examples/
+            !build/tests/
+            !build/_deps/
+            !build/**/*libtbb*
