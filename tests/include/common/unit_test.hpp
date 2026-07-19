@@ -5,7 +5,7 @@
 
 #pragma once
 
-// Content: Common include of all tests
+// Content: Common unit test include
 
 #define DOCTEST_CONFIG_VOID_CAST_EXPRESSIONS
 // makes `CHECK_THROWS()` not warn for discarding [[nodiscard]]
@@ -16,4 +16,14 @@
 #define DOCTEST_CONFIG_USE_STD_HEADERS
 // removes non-compliant usage of forward declarations at the cost of slightly increasing compile time
 
-#include <doctest.h> // TEST_CASE(), CHECK(), ...
+#include <doctest.h> // TEST_CASE(), CHECK(), REQUIRE(), ...
+
+// Combined constexpr + runtime assertions
+#define STATIC_CHECK(...)         static_assert( __VA_ARGS__ ); CHECK        ( __VA_ARGS__ )
+#define STATIC_CHECK_FALSE(...)   static_assert( __VA_ARGS__ ); CHECK_FALSE  ( __VA_ARGS__ )
+#define STATIC_REQUIRE(...)       static_assert( __VA_ARGS__ ); REQUIRE      ( __VA_ARGS__ )
+#define STATIC_REQUIRE_FALSE(...) static_assert( __VA_ARGS__ ); REQUIRE_FALSE( __VA_ARGS__ )
+
+namespace ut {
+    using namespace doctest;
+}

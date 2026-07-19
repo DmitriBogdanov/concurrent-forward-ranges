@@ -9,20 +9,10 @@
 
 #include <cfr/utility/automatic_grain.hpp> // cfr::ranges::automatic_grain
 
-TEST_CASE("`constexpr` evaluation") {
+TEST_CASE( "cfr::ranges::automatic_grain / invariants" ) {
     
-    constexpr auto range = std::array{ 0, 1, 2, 3, 4 };
-    constexpr auto grain = cfr::ranges::automatic_grain( range );
+    constexpr auto range = std::array{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     
-    static_assert( grain > 0 );
-    
-}
-
-TEST_CASE("Uninitialized task arena grain") {
-    
-    const auto range = std::array{ 0, 1, 2, 3, 4 };
-    const auto grain = cfr::ranges::automatic_grain( range );
-    
-    static_assert( grain > 0 );
+    STATIC_CHECK( cfr::ranges::automatic_grain( range ) > 0 );
     
 }

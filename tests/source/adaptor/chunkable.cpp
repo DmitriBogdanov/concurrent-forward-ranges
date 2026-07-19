@@ -11,7 +11,7 @@
 
 #include <cfr/adaptor/chunkable.hpp> // cfr::views::chunkable
 
-TEST_CASE("Range category preservation") {
+TEST_CASE( "cfr::views::chunkable / range category" ) {
     
     const auto range_0 = std::vector      <int>{};
     const auto range_1 = std::list        <int>{};
@@ -24,33 +24,32 @@ TEST_CASE("Range category preservation") {
     
 }
 
-TEST_CASE("`constexpr` viewing support") {
+TEST_CASE( "cfr::views::divisible / view interface" ) {
     
     constexpr auto range = std::array{ 10, 20, 30 };
     
-    static_assert( cfr::views::chunkable( range ) );
+    STATIC_CHECK( cfr::views::chunkable( range ) );
     
-    static_assert( cfr::views::chunkable( range ).empty() == false );
-    static_assert( cfr::views::chunkable( range ).size () == 3     );
+    STATIC_CHECK( cfr::views::chunkable( range ).empty() == false );
+    STATIC_CHECK( cfr::views::chunkable( range ).size () == 3     );
     
-    static_assert( cfr::views::chunkable( range ).front() == 10 );
-    static_assert( cfr::views::chunkable( range ).back () == 30 );
+    STATIC_CHECK( cfr::views::chunkable( range ).front() == 10 );
+    STATIC_CHECK( cfr::views::chunkable( range ).back () == 30 );
     
-    static_assert( cfr::views::chunkable( range )[0] == 10 );
-    static_assert( cfr::views::chunkable( range )[1] == 20 );
-    static_assert( cfr::views::chunkable( range )[2] == 30 );
+    STATIC_CHECK( cfr::views::chunkable( range )[0] == 10 );
+    STATIC_CHECK( cfr::views::chunkable( range )[1] == 20 );
+    STATIC_CHECK( cfr::views::chunkable( range )[2] == 30 );
     
 }
 
-TEST_CASE("`constexpr` subdivision support") {
+TEST_CASE( "cfr::views::divisible / subdivision" ) {
     
     constexpr auto range = std::array{ 10, 20, 30 };
     
-    static_assert( cfr::views::chunkable( range ).chunk() );
+    STATIC_CHECK( cfr::views::chunkable( range ).chunk() );
     
-    static_assert( cfr::views::chunkable( range ).is_chunkable() );
+    STATIC_CHECK( cfr::views::chunkable( range ).is_chunkable() );
     
-    static_assert( cfr::views::chunkable( range ).grainsize() );
+    STATIC_CHECK( cfr::views::chunkable( range ).grainsize() );
     
 }
-
