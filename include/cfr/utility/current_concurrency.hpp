@@ -5,7 +5,7 @@
 
 #pragma once
 
-// Content: Niebloid for querying current concurrency level in a `constexpr`-compatible fashion.
+// Content: Contexpr-friendly current concurrency query.
 
 #include <tbb/task_arena.h> // tbb::this_task_arena::max_concurrency()
 
