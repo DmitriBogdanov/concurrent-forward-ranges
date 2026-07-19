@@ -23,5 +23,5 @@ target_link_libraries( "${PROJECT_NAME}_ut" PRIVATE "${PROJECT_NAME}::lib" )
 
 add_test(
     NAME    "${PROJECT_NAME}_ut"
-    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/cfr_ut" --no-intro --no-path-filenames --force-colors
+    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/cfr_ut" --no-intro --no-path-filenames --force-colors --duration
 )
