@@ -19,8 +19,13 @@ target_include_directories( "${PROJECT_NAME}_ut" PRIVATE "${CMAKE_CURRENT_SOURCE
 
 target_link_libraries( "${PROJECT_NAME}_ut" PRIVATE "${PROJECT_NAME}::lib" "doctest::doctest" )
 
-# Note: Without explicitly telling TBB to put it's DLLs into the same directory as executable
-#       we would be unable to locate them when running on Windows without TBB package install
+# Copy TBB DDLs
+
+add_custom_command( TARGET "${PROJECT_NAME}_ut" POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    $<TARGET_FILE:TBB::tbb>
+    $<TARGET_FILE_DIR:cfr_ut>
+)
 
 # Register CTest
 

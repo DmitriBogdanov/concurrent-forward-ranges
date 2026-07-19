@@ -6,12 +6,6 @@ project( cfr
     HOMEPAGE_URL "https://github.com/DmitriBogdanov/concurrent-forward-ranges"
 )
 
-# Force all 
-
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/" )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib/" )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/lib/" )
-
 # Fetch library dependencies
 
 include( cmake/CPM.cmake )
