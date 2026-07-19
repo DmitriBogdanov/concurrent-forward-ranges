@@ -1,0 +1,45 @@
+# __________________________________ CONTENTS ___________________________________
+#
+#    This is a workflow file for GitHub Actions that runs tests on Ubuntu.
+#    The workflow is triggered automatically on every push or pull request.
+#    Run results are then archived as GitHub artifacts.
+#
+#    By default, MacOS provides 'clang++' which links 'libc++' stdlib.
+# _______________________________________________________________________________
+
+name: "Run tests: MacOS"
+
+run-name: "Build & runs tests on MacOS"
+
+on: [ push, pull_request ]
+
+jobs:
+  build-and-test:
+    
+    runs-on: macos-latest
+    
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v7
+          
+      - name: "Configure CMake"
+        run: cmake --preset clang
+        
+      - name: "Build project"
+        run: cmake --build --preset clang
+        
+      - name: "Run tests"
+        run: ctest --preset clang
+        
+      - name: "Upload test artifacts"
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: "${{ runner.os }}-${{ runner.arch }}-artifacts-${{ github.run_id }}"
+          path: |
+            build/
+            !build/benchmarks/
+            !build/examples/
+            !build/tests/
+            !build/_deps/
+            !build/**/*libtbb*
