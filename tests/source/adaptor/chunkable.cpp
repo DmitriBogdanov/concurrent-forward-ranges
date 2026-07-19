@@ -24,7 +24,7 @@ TEST_CASE( "cfr::views::chunkable / range category" ) {
     
 }
 
-TEST_CASE( "cfr::views::divisible / view interface" ) {
+TEST_CASE( "cfr::views::chunkable / view interface" ) {
     
     constexpr auto range = std::array{ 10, 20, 30 };
     
@@ -42,7 +42,7 @@ TEST_CASE( "cfr::views::divisible / view interface" ) {
     
 }
 
-TEST_CASE( "cfr::views::divisible / subdivision" ) {
+TEST_CASE( "cfr::views::chunkable / subdivision" ) {
     
     constexpr auto range = std::array{ 10, 20, 30 };
     

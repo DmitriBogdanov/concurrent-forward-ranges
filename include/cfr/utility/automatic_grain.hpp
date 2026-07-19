@@ -7,8 +7,8 @@
 
 // Content: Niebloid for automatically estimating a reasonable grain size for a range.
 
-#include <cfr/utility/explicit_size.hpp>   // cfr::ranges::explicit_size
-#include <cfr/utility/max_concurrency.hpp> // cfr::this_task_arena::max_concurrency
+#include <cfr/utility/current_concurrency.hpp> // cfr::current_concurrency
+#include <cfr/utility/explicit_size.hpp>       // cfr::ranges::explicit_size
 
 namespace cfr::ranges {
 
@@ -21,7 +21,7 @@ struct automatic_grain_fn {
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> std::size_t
     {
-        const std::size_t workers = cfr::this_task_arena::max_concurrency();
+        const std::size_t workers = cfr::current_concurrency();
             // in case task arena is not yet initialized, TBB will try to return hardware concurrency
         
         const std::size_t tasks = workers * tasks_per_worker;

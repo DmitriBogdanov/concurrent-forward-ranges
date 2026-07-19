@@ -5,13 +5,13 @@
 
 #pragma once
 
-// Content: Niebloid for querying current task arena concurrency in a `constexpr`-compatible fashion.
+// Content: Niebloid for querying current concurrency level in a `constexpr`-compatible fashion.
 
 #include <tbb/task_arena.h> // tbb::this_task_arena::max_concurrency()
 
-namespace cfr::this_task_arena {
+namespace cfr {
 
-struct max_concurrency_fn {
+struct current_concurrency_fn {
     
     [[nodiscard]] constexpr auto operator()() const
         -> std::size_t
@@ -26,6 +26,6 @@ struct max_concurrency_fn {
     
 };
 
-inline constexpr auto max_concurrency = max_concurrency_fn{};
+inline constexpr auto current_concurrency = current_concurrency_fn{};
 
 } // namespace cfr::ranges

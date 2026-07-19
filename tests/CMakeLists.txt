@@ -8,6 +8,7 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     "${DEV_UNIT_TEST_SOURCES}/adaptor/divisible.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/utility/automatic_grain.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/utility/current_concurrency.cpp"
     "${DEV_UNIT_TEST_SOURCES}/utility/explicit_size.cpp"
 )
 
