@@ -3,6 +3,9 @@
 add_executable( "${PROJECT_NAME}_ut"
     "source/main.cpp"
     
+    "source/adaptor/chunkable_adaptor.cpp"
+    "source/adaptor/divisible_adaptor.cpp"
+    
     "source/utility/automatic_grain.cpp"
     "source/utility/explicit_size.cpp"
 )

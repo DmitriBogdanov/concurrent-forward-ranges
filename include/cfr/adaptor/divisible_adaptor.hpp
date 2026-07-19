@@ -87,6 +87,8 @@ public:
         // Note: Following TBB convention, new segment splits on the right.
     }
     
+    [[nodiscard]] constexpr bool is_divisible() const noexcept { return this->cached_count > this->cached_grain; }
+    
     // Additional API
     
     [[nodiscard]] constexpr size_type grainsize() const noexcept { return this->cached_grain; }
