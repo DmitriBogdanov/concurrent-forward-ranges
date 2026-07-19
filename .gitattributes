@@ -1,5 +1,5 @@
 # Exclude dependencies from GitHub 'Languages' repository statistic
-external/** linguist-vendored
+cmake/** linguist-vendored
 benchmarks/** linguist-vendored
 examples/** linguist-vendored
 tests/** linguist-vendored
