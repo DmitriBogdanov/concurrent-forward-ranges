@@ -1,6 +1,6 @@
 # __________________________________ CONTENTS ___________________________________
 #
-#    This is a workflow file for GitHub Actions that runs tests on Ubuntu.
+#    This is a workflow file for GitHub Actions that runs tests on MacOS.
 #    The workflow is triggered automatically on every push or pull request.
 #    Run results are then archived as GitHub artifacts.
 #
@@ -42,4 +42,4 @@ jobs:
             !build/examples/
             !build/tests/
             !build/_deps/
-            !build/**/*libtbb*
+            !build/**/*.so

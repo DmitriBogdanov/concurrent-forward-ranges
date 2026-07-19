@@ -43,4 +43,5 @@ jobs:
             !build/examples/
             !build/tests/
             !build/_deps/
-            !build/**/*libtbb*
+            !build/**/*.dll
+            !build/**/*.pdb
