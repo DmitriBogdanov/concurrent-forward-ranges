@@ -9,7 +9,7 @@
 #include <list>         // std::list<>
 #include <vector>       // std::vector<>
 
-#include <cfr/adaptor/divisible_adaptor.hpp> // cfr::views::divisible
+#include <cfr/adaptor/divisible.hpp> // cfr::views::divisible
 
 TEST_CASE("Range category preservation") {
     

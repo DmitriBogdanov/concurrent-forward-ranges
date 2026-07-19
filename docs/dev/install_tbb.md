@@ -9,10 +9,12 @@ Summary of the [official installation guide](https://github.com/uxlfoundation/on
 git clone https://github.com/uxlfoundation/oneTBB.git
 
 # Build
-cd $oneTBB
+cd oneTBB
 cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$HOME/.local/tbb -DTBB_TEST=OFF
 cmake --build build
 
 # Install
 cmake --install build
 ```
+
+**Note:** TBB also supports direct usage with `add_directory()` of `FetchContent()` which is usually easier

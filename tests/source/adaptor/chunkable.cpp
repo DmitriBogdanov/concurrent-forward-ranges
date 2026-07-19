@@ -9,7 +9,7 @@
 #include <list>         // std::list<>
 #include <vector>       // std::vector<>
 
-#include <cfr/adaptor/chunkable_adaptor.hpp> // cfr::views::chunkable
+#include <cfr/adaptor/chunkable.hpp> // cfr::views::chunkable
 
 TEST_CASE("Range category preservation") {
     
