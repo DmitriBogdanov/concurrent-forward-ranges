@@ -17,11 +17,10 @@ target_include_directories( "${PROJECT_NAME}_ut" PRIVATE "${CMAKE_CURRENT_SOURCE
 
 # Link dependencies
 
-target_link_libraries( "${PROJECT_NAME}_ut" PRIVATE "${PROJECT_NAME}::lib" )
+target_link_libraries( "${PROJECT_NAME}_ut" PRIVATE "${PROJECT_NAME}::lib" "doctest::doctest" )
 
-# Register for CTest
+# Register CTest
 
-add_test(
-    NAME    "${PROJECT_NAME}_ut"
-    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/cfr_ut" --no-intro --no-path-filenames --force-colors --duration
-)
+include( "${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake" )
+
+doctest_discover_tests( "${PROJECT_NAME}_ut" )

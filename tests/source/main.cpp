@@ -1,2 +1,3 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <common/framework.hpp>
+
+#include <common/unit_test.hpp>

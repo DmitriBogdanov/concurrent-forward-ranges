@@ -6,7 +6,7 @@ project( cfr
     HOMEPAGE_URL "https://github.com/DmitriBogdanov/concurrent-forward-ranges"
 )
 
-# Fetch TBB
+# Fetch library dependencies
 
 include( cmake/CPM.cmake )
 
@@ -29,10 +29,21 @@ add_library( "${PROJECT_NAME}::lib" ALIAS "${PROJECT_NAME}" )
 # Project is top-level => build tests, benchmarks and examples
 
 if( "${CMAKE_SOURCE_DIR}" STREQUAL "${PROJECT_SOURCE_DIR}" )
+    
+    # Fetch developer dependencies
+    
+    CPMAddPackage(
+        URI  "gh:doctest/doctest#v2.5.3"
+        NAME doctest
+    )
 
+    # Enable testing
+    
     include( CTest )
     
-    enable_testing() # should be invoked before adding test directories
+    enable_testing()
+    
+    # Create test target
     
     add_subdirectory( "tests" )
     

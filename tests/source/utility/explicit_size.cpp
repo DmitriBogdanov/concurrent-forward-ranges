@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <common/framework.hpp>
+#include <common/unit_test.hpp>
 
 #include <array>        // std::array<>
 #include <forward_list> // std::forward_list<>
@@ -14,7 +14,7 @@
 TEST_CASE("`constexpr` evaluation") {
     
     constexpr auto range = std::array{ 0, 1, 2, 3, 4 };
-    constexpr auto size  = cfr::ranges::explicit_size(range);
+    constexpr auto size  = cfr::ranges::explicit_size( range );
     
     static_assert( size == 5 );
     
@@ -23,9 +23,9 @@ TEST_CASE("`constexpr` evaluation") {
 TEST_CASE("O( 1 ) sizable range") {
     
     const auto range = std::vector{ 0, 1, 2, 3, 4 };
-    const auto size  = cfr::ranges::explicit_size(range);
+    const auto size  = cfr::ranges::explicit_size( range );
     
-    static_assert( std::ranges::sized_range<decltype(range)> );
+    static_assert( std::ranges::sized_range<decltype( range )> );
     
     CHECK( size == 5 );
     
@@ -34,9 +34,9 @@ TEST_CASE("O( 1 ) sizable range") {
 TEST_CASE("O( N ) sizable range") {
     
     const auto range = std::forward_list{ 0, 1, 2, 3, 4 };
-    const auto size  = cfr::ranges::explicit_size(range);
+    const auto size  = cfr::ranges::explicit_size( range );
     
-    static_assert( !std::ranges::sized_range<decltype(range)> );
+    static_assert( !std::ranges::sized_range<decltype( range )> );
     
     CHECK( size == 5 );
     

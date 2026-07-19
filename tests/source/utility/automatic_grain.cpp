@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-#include <common/framework.hpp>
+#include <common/unit_test.hpp>
 
 #include <array> // std::array<>
 
@@ -12,7 +12,7 @@
 TEST_CASE("`constexpr` evaluation") {
     
     constexpr auto range = std::array{ 0, 1, 2, 3, 4 };
-    constexpr auto grain = cfr::ranges::automatic_grain(range);
+    constexpr auto grain = cfr::ranges::automatic_grain( range );
     
     static_assert( grain > 0 );
     
@@ -21,7 +21,7 @@ TEST_CASE("`constexpr` evaluation") {
 TEST_CASE("Uninitialized task arena grain") {
     
     const auto range = std::array{ 0, 1, 2, 3, 4 };
-    const auto grain = cfr::ranges::automatic_grain(range);
+    const auto grain = cfr::ranges::automatic_grain( range );
     
     static_assert( grain > 0 );
     
