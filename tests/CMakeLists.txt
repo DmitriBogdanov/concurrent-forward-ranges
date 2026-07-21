@@ -7,6 +7,9 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     "${DEV_UNIT_TEST_SOURCES}/adaptor/chunkable.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/divisible.cpp"
     
+    "${DEV_UNIT_TEST_SOURCES}/concept/sizable_range.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/concept/tbb_compatible_range.cpp"
+    
     "${DEV_UNIT_TEST_SOURCES}/utility/automatic_grain.cpp"
     "${DEV_UNIT_TEST_SOURCES}/utility/current_concurrency.cpp"
     "${DEV_UNIT_TEST_SOURCES}/utility/explicit_size.cpp"
