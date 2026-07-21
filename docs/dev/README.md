@@ -134,6 +134,12 @@ Note that return type of `chunk()` doesn't have to match the original range. We 
 
 Worst-case scenario cost of parallelization when using `cfr::views::chunkable` adaptor is an additional `O( N )` iteration pass (so we can distribute initial tasks). Assuming the workload per iteration is higher than the cost of iteration itself (which is usually the case) we can still get a decently large benefit from parallelization even when working with exceedingly "bad" ranges such as `std::list`.
 
+## Advanced details
+
+A range can be both chunkable and divisible at the same time, in that case it's up to the algorithms to decide which strategy they prefer.
+
+Additionally, ranges can provide an optional method for querying `grainsize()`, some algorithms will make use of it to improve their internal heuristics. For example, algorithms that zip & subdivide multiple ranges in-sync will pick their max grain based on the `grainsize()` if it's available.
+
 ## Basic Examples
 
 ### Parallel for each
