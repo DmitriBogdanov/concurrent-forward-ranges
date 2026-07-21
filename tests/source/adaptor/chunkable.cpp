@@ -24,6 +24,18 @@ TEST_CASE( "cfr::views::chunkable / range category" ) {
     
 }
 
+TEST_CASE( "cfr::views::chunkable / borrowing" ) {
+    
+    const auto range_0 = std::vector      <int>{};
+    const auto range_1 = std::list        <int>{};
+    const auto range_2 = std::forward_list<int>{};
+    
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::chunkable( range_0 ) )> );
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::chunkable( range_1 ) )> );
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::chunkable( range_2 ) )> );
+    
+}
+
 TEST_CASE( "cfr::views::chunkable / view interface" ) {
     
     constexpr auto range = std::array{ 10, 20, 30 };
