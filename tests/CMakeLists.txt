@@ -4,6 +4,7 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
 
     "${DEV_UNIT_TEST_SOURCES}/main.cpp"
     
+    "${DEV_UNIT_TEST_SOURCES}/adaptor/adapt.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/chunkable.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/divisible.cpp"
     

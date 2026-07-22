@@ -5,6 +5,7 @@
 
 #include <common/unit_test.hpp>
 
+#include <deque>        // std::deque<>
 #include <forward_list> // std::forward_list<>
 #include <list>         // std::list<>
 #include <vector>       // std::vector<>
@@ -17,22 +18,24 @@ TEST_CASE( "cfr::views::divisible / range category" ) {
     const auto range_1 = std::list        <int>{};
     const auto range_2 = std::forward_list<int>{};
     
-    static_assert( std::ranges::   contiguous_range<decltype( cfr::views::divisible( range_0 ) )> );
-    static_assert( std::ranges::random_access_range<decltype( cfr::views::divisible( range_0 ) )> );
-    static_assert( std::ranges::bidirectional_range<decltype( cfr::views::divisible( range_1 ) )> );
-    static_assert( std::ranges::      forward_range<decltype( cfr::views::divisible( range_2 ) )> );
+    static_assert( std::ranges::   contiguous_range<decltype( cfr::views::divisible( range_0    ) )> ); //
+    static_assert( std::ranges::random_access_range<decltype( cfr::views::divisible( range_0    ) )> ); //
+    static_assert( std::ranges::bidirectional_range<decltype( cfr::views::divisible( range_1    ) )> ); //
+    static_assert( std::ranges::      forward_range<decltype( cfr::views::divisible( range_2, 1 ) )> ); // not O( 1 ) sized
     
 }
 
 TEST_CASE( "cfr::views::chunkable / borrowing" ) {
     
     const auto range_0 = std::vector      <int>{};
-    const auto range_1 = std::list        <int>{};
-    const auto range_2 = std::forward_list<int>{};
+    const auto range_1 = std::deque       <int>{};
+    const auto range_2 = std::list        <int>{};
+    const auto range_3 = std::forward_list<int>{};
     
-    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_0 ) )> );
-    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_1 ) )> );
-    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_2 ) )> );
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_0    ) )> ); //
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_1    ) )> ); //
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_2    ) )> ); //
+    static_assert( std::ranges::borrowed_range<decltype( cfr::views::divisible( range_3, 1 ) )> ); // not O( 1 ) sized
     
 }
 
