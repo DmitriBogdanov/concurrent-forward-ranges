@@ -87,7 +87,7 @@ namespace cfr::views {
 struct chunkable_fn {
     
     template <class R>
-        requires cfr::ranges::sizable_range<R>
+        requires cfr::ranges::sizable_range<R> && std::ranges::sized_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> cfr::ranges::chunkable_view<std::ranges::iterator_t<R>>
     {

@@ -21,7 +21,7 @@ namespace cfr::views {
 struct adapt_fn {
     
     template <class R>
-        requires cfr::ranges::sizable_range<R>
+        requires cfr::ranges::sizable_range<R> && std::ranges::sized_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> std::ranges::borrowed_range auto
     {
