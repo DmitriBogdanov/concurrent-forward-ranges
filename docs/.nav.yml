@@ -1,0 +1,49 @@
+# __________________________________ CONTENTS ___________________________________
+#
+#    This is a meta file for the 'mkdocs-awesome-nav' MkDocs plugin, it allows
+#    us to manually specify navigation structure and order (by default the order
+#    is alphabetic and sections correspond to directories).
+#
+#    It would be nice to use directories as intended, however there is already
+#    plenty of places linking the docs files directly, so we can't move them
+#    without breaking the URLs, so the flat file structure is here to stay.
+# _______________________________________________________________________________
+
+nav:
+  - "Home": README.md
+  - "Adaptors":
+    - "cfr::views::adapt"                       : x.md
+    - "cfr::views::chunkable"                   : x.md
+    - "cfr::views::divisible"                   : x.md
+    - "cfr::views::tbb_compatible"              : x.md
+  - "Algorithms":
+    - "cfr::ranges::for_each"                   : x.md
+  - "Backends":
+    - "cfr::ranges::slice_for"                  : x.md
+    - "cfr::ranges::slice_test"                 : x.md
+    - "cfr::ranges::slice_reduce"               : x.md
+    - "cfr::ranges::slice_deterministic_reduce" : x.md
+    - "cfr::ranges::slice_scan"                 : x.md
+  - "Concepts":
+    - "cfr::ranges::bounded_range"              : x.md
+    - "cfr::ranges::indexable_range"            : x.md
+    - "cfr::ranges::parallel_range"             : x.md
+  - "Ranges":
+    - "cfr::ranges::autograin"                  : x.md
+    - "cfr::ranges::grainsize"                  : x.md
+    - "cfr::ranges::measure"                    : x.md
+  - "Requirements":
+    - "cfr::ranges::adapted_range"              : x.md
+    - "cfr::ranges::chunkable_range"            : x.md
+    - "cfr::ranges::divisible_range"            : x.md
+    - "cfr::ranges::tbb_compatible_range"       : x.md
+  - "Utility":
+    - "cfr::current_concurrency"                : x.md
+    - "cfr::hardware_concurrency"               : x.md
+    - "cfr::invoke_with_concurrency"            : x.md
+  - "License": guide_license.md
+
+# Note: We use 'guide_license.md' instead of the usual 'LICENSE.md' to work around the GitHub 
+#       license detection quirks. The system requires license to be placed in root, while the 
+#       website needs a copy in 'docs/'. If 'LICENSE.md' is located in both places GitHub tends
+#       to randomly get confused and show two identical licenses when viewing the repo.

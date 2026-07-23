@@ -1,3 +1,6 @@
+> [!Warning]
+> Current README is an **expected** specification and architectural guide, not an accurate representation of the actual feature set.
+
 # concurrent-forward-ranges
 
 **CFR** is a library of concurrent range algorithms that implements most of C++20 [`<algorithm>`](https://en.cppreference.com/cpp/header/algorithm) and a range-based version of [`<numeric>`](https://en.cppreference.com/cpp/header/numeric).
@@ -16,10 +19,10 @@ Internally the library relies on OneTBB as its parallelism backend due to its wi
 
 Most `cfr` algorithms can operate on 4 kinds of ranges:
 
-1) [`std::ranges::random_access_range`](https://en.cppreference.com/cpp/ranges/random_access_range)
-2) [`cfr::ranges::divisible_range`]()
-3) [`cfr::ranges::chunkable_range`]()
-4) [`cfr::ranges::tbb_compatible_range`](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onetbb/source/named_requirements/algorithms/range)
+1. [`std::ranges::random_access_range`](https://en.cppreference.com/cpp/ranges/random_access_range)
+2. [`cfr::ranges::divisible_range`]()
+3. [`cfr::ranges::chunkable_range`]()
+4. [`cfr::ranges::tbb_compatible_range`](https://oneapi-spec.uxlfoundation.org/specifications/oneapi/latest/elements/onetbb/source/named_requirements/algorithms/range)
 
 Additionally, all ranges are required to be bounded and forward-iterable to allow multiple passes.
 
