@@ -5,15 +5,15 @@
 
 #pragma once
 
-// Content: Concept for ranges with a reachable end sentinel.
+// Content: Concept for ranges with computable finite size.
 
 #include <concepts> // std::convertible_to<>
 #include <iterator> // std::unreachable_sentinel_t
-#include <ranges>   // std::ranges::range<>, std::ranges::sentinel_t<>
+#include <ranges>   // std::ranges::forward_range<>, std::ranges::sentinel_t<>
 
 namespace cfr::ranges {
 
 template <class R>
-concept finite_range = std::ranges::range<R> && !std::convertible_to<std::ranges::sentinel_t<R>, std::unreachable_sentinel_t>;
+concept bounded_range = std::ranges::forward_range<R> && !std::convertible_to<std::ranges::sentinel_t<R>, std::unreachable_sentinel_t>;
 
 } // namespace cfr::ranges

@@ -9,7 +9,7 @@
 
 #include <tbb/blocked_range.h> // tbb::blocked_range<>
 
-#include <cfr/concept/tbb_compatible_range.hpp> // cfr::ranges::tbb_compatible_range<>
+#include <cfr/requirement/tbb_compatible_range.hpp> // cfr::ranges::tbb_compatible_range<>
 
 TEST_CASE( "cfr::ranges::tbb_compatible_range<> / tbb::blocked_range<>" ) {
     

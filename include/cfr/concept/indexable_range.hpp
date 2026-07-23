@@ -9,13 +9,13 @@
 
 #include <ranges> // std::ranges::random_access_range<>
 
-#include <cfr/concept/sizable_range.hpp> // cfr::ranges::sizable_range<>
+#include <cfr/concept/bounded_range.hpp> // cfr::ranges::bounded_range<>
 
 namespace cfr::ranges {
 
 template <class R>
 concept indexable_range = requires ( R && range ) {
-    requires cfr::ranges::sizable_range<R>;
+    requires cfr::ranges::bounded_range<R>;
     
     requires std::ranges::random_access_range<R>;
 };

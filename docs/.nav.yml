@@ -29,9 +29,9 @@ nav:
     - "cfr::ranges::indexable_range"            : x.md
     - "cfr::ranges::parallel_range"             : x.md
   - "Ranges":
-    - "cfr::ranges::autograin"                  : x.md
-    - "cfr::ranges::grainsize"                  : x.md
-    - "cfr::ranges::measure"                    : x.md
+    - "cfr::ranges::automatic_grain"            : x.md
+    - "cfr::ranges::explicit_size"              : x.md
+    - "cfr::ranges::grain_size"                 : x.md
   - "Requirements":
     - "cfr::ranges::adapted_range"              : x.md
     - "cfr::ranges::chunkable_range"            : x.md

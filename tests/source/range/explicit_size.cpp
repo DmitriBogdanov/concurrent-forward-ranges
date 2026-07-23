@@ -8,7 +8,7 @@
 #include <array>        // std::array<>
 #include <forward_list> // std::forward_list<>
 
-#include <cfr/utility/explicit_size.hpp> // cfr::ranges::explicit_size
+#include <cfr/range/explicit_size.hpp> // cfr::ranges::explicit_size
 
 TEST_CASE( "cfr::ranges::explicit_size / O( 1 ) case" ) {
     

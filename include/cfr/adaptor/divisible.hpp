@@ -7,11 +7,11 @@
 
 // Content: View that enables recursive subdivision for an arbitrary range.
 
-#include <iterator> // std::forward_iterator<>, std::sentinel_for<>, std::ranges::next
+#include <iterator> // std::forward_iterator<>, std::ranges::next
 #include <ranges>   // std::ranges::view_interface<>, std::ranges::subrange<>
 
-#include <cfr/utility/automatic_grain.hpp> // cfr::ranges::automatic_grain
-#include <cfr/utility/explicit_size.hpp>   // cfr::ranges::explicit_size
+#include <cfr/range/automatic_grain.hpp> // cfr::ranges::automatic_grain
+#include <cfr/range/explicit_size.hpp>   // cfr::ranges::explicit_size
 
 namespace cfr::ranges {
 
@@ -91,7 +91,7 @@ public:
     
     // Additional API
     
-    [[nodiscard]] constexpr size_type grainsize() const noexcept { return this->cached_grain; }
+    [[nodiscard]] constexpr size_type grain_size() const noexcept { return this->cached_grain; }
 };
 
 } // namespace cfr::ranges
@@ -101,7 +101,7 @@ namespace cfr::views {
 struct divisible_fn {
     
     template <class R>
-        requires cfr::ranges::sizable_range<R> && std::ranges::sized_range<R>
+        requires cfr::ranges::bounded_range<R> && std::ranges::sized_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> cfr::ranges::divisible_view<std::ranges::iterator_t<R>>
     {
@@ -114,7 +114,7 @@ struct divisible_fn {
     }
     
     template <class R>
-        requires cfr::ranges::sizable_range<R>
+        requires cfr::ranges::bounded_range<R>
     [[nodiscard]] constexpr auto operator()( R && range, std::size_t grain ) const
         -> cfr::ranges::divisible_view<std::ranges::iterator_t<R>>
     {

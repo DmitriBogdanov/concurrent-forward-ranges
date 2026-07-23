@@ -5,7 +5,7 @@
 
 #pragma once
 
-// Content: Concepts for ranges compatible with TBB [req.range] named requirements
+// Content: Concept for ranges compatible with TBB [req.range] named requirement.
 
 #include <concepts>    // std::constructible_from<>, std::convertible_to<>
 #include <type_traits> // std::remove_cvref_t<>, std::add_lvalue_reference_t<>

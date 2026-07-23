@@ -5,19 +5,19 @@
 
 #pragma once
 
-// Content: Niebloid for explicitly computing range size, uses O(1) size if possible,
-//          otherwise falls back onto a full O(N) distance-to-sentinel evaluation.
+// Content: Explicit computation of bounded range size, uses O( 1 ) size if possible,
+//          otherwise falls back onto a full O( N ) distance-to-sentinel evaluation.
 
-#include <ranges> // std::ranges::size, std::ranges::distance
+#include <ranges> // std::ranges::size, std::ranges::distance, std::ranges::sized_range<>
 
-#include <cfr/concept/sizable_range.hpp> // cfr::ranges::sizable_range<>
+#include <cfr/concept/bounded_range.hpp> // cfr::ranges::bounded_range<>
 
 namespace cfr::ranges {
 
 struct explicit_size_fn {
 
     template <class R>
-        requires cfr::ranges::sizable_range<R>
+        requires cfr::ranges::bounded_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> std::size_t
     {

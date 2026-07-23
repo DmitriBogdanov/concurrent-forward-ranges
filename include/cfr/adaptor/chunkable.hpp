@@ -11,8 +11,8 @@
 #include <ranges>   // std::ranges::view_interface<>, std::ranges::subrange<>
 #include <utility>  // std::exchange()
 
-#include <cfr/utility/automatic_grain.hpp> // cfr::ranges::automatic_grain
-#include <cfr/utility/explicit_size.hpp>   // cfr::ranges::explicit_size
+#include <cfr/concept/bounded_range.hpp> // cfr::ranges::bounded_range<>
+#include <cfr/range/automatic_grain.hpp> // cfr::ranges::automatic_grain
 
 namespace cfr::ranges {
 
@@ -77,7 +77,7 @@ public:
     
     // Additional API
     
-    [[nodiscard]] constexpr size_type grainsize() const noexcept { return this->cached_grain; }
+    [[nodiscard]] constexpr size_type grain_size() const noexcept { return this->cached_grain; }
 };
 
 } // namespace cfr::ranges
@@ -87,7 +87,7 @@ namespace cfr::views {
 struct chunkable_fn {
     
     template <class R>
-        requires cfr::ranges::sizable_range<R> && std::ranges::sized_range<R>
+        requires cfr::ranges::bounded_range<R> && std::ranges::sized_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> cfr::ranges::chunkable_view<std::ranges::iterator_t<R>>
     {
@@ -99,7 +99,7 @@ struct chunkable_fn {
     }
     
     template <class R>
-        requires cfr::ranges::sizable_range<R>
+        requires cfr::ranges::bounded_range<R>
     [[nodiscard]] constexpr auto operator()( R && range, std::size_t grain ) const
         -> cfr::ranges::chunkable_view<std::ranges::iterator_t<R>>
     {

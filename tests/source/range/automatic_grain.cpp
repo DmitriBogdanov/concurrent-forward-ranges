@@ -7,7 +7,7 @@
 
 #include <array> // std::array<>
 
-#include <cfr/utility/automatic_grain.hpp> // cfr::ranges::automatic_grain
+#include <cfr/range/automatic_grain.hpp> // cfr::ranges::automatic_grain
 
 TEST_CASE( "cfr::ranges::automatic_grain / invariants" ) {
     

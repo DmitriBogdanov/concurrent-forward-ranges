@@ -65,6 +65,6 @@ TEST_CASE( "cfr::views::divisible / subdivision" ) {
     
     static_assert( cfr::views::divisible( range ).is_divisible() );
     
-    static_assert( cfr::views::divisible( range ).grainsize() );
+    static_assert( cfr::views::divisible( range ).grain_size() );
     
 }

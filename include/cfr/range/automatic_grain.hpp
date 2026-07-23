@@ -5,10 +5,10 @@
 
 #pragma once
 
-// Content: Niebloid for automatically estimating a reasonable grain size for a range.
+// Content: Reasonable automatic estimate of grain size suitable for a given range.
 
+#include <cfr/range/explicit_size.hpp>         // cfr::ranges::explicit_size
 #include <cfr/utility/current_concurrency.hpp> // cfr::current_concurrency
-#include <cfr/utility/explicit_size.hpp>       // cfr::ranges::explicit_size
 
 namespace cfr::ranges {
 
@@ -17,7 +17,7 @@ struct automatic_grain_fn {
     constexpr static std::size_t tasks_per_worker = 16;
     
     template <class R>
-        requires cfr::ranges::sizable_range<R>
+        requires cfr::ranges::bounded_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> std::size_t
     {
@@ -28,7 +28,7 @@ struct automatic_grain_fn {
         
         const std::size_t estimate = cfr::ranges::explicit_size( range ) / tasks;
             // most parallel ranges will have O( 1 ) size, but in pathological cases we might have to 
-            // fallback onto O( N ). Algorithm / adapter APIs are protected against falling into this 
+            // fallback onto O( N ). Algorithm / adaptor APIs are protected against falling into this 
             // branch implicitly so we only perform O( N ) check if the user explicitly requests it.
         
         return estimate ? estimate : std::size_t( 1 );
