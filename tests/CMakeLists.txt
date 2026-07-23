@@ -12,6 +12,7 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     
     "${DEV_UNIT_TEST_SOURCES}/range/automatic_grain.cpp"
     "${DEV_UNIT_TEST_SOURCES}/range/explicit_size.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/range/grain_size.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/requirement/tbb_compatible_range.cpp"
     

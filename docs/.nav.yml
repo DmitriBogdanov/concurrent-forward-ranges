@@ -26,6 +26,7 @@ nav:
     - "cfr::ranges::slice_scan"                 : x.md
   - "Concepts":
     - "cfr::ranges::bounded_range"              : x.md
+    - "cfr::ranges::grained_range"              : x.md
     - "cfr::ranges::indexable_range"            : x.md
     - "cfr::ranges::parallel_range"             : x.md
   - "Ranges":
