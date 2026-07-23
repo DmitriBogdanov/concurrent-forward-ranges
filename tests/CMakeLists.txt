@@ -7,6 +7,7 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     "${DEV_UNIT_TEST_SOURCES}/adaptor/adapt.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/chunkable.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/divisible.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/adaptor/tbb_compatible.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/concept/bounded_range.cpp"
     
