@@ -36,36 +36,44 @@ TEST_CASE( "cfr::ranges::slice_for / compile-time evaluation" ) {
 
 namespace {
 
+struct callable {
+    std::size_t state = 0;
+    
+    void operator()( auto && slice ) { 
+        for (auto && value : slice) { value += 10; ut::atomic_increment( state ); }
+    }
+};
+
 template <cfr::ranges::bounded_range R, std::invocable<R> A>
-void fuzz_case( A adaptor ) {
-    ut::fuzz_test( [&]{
-        /* */ auto checked_range = R{  0,  1,  2,  3,  4,  5,  6,  7,  8,  9 };
-        const auto correct_range = R{ 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
-        
-        cfr::ranges::slice_for( adaptor( checked_range ), [&]( auto && slice ) {
-            for (auto && value : slice) value += 10;
-        } );
-        
-        CHECK( std::ranges::equal( checked_range, correct_range ) );
-    } );
+void verify( A adaptor ) {
+    
+    /* */ auto checked_range = R{  0,  1,  2,  3,  4,  5,  6,  7,  8,  9 };
+    const auto correct_range = R{ 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    
+    const auto [iter, func] = cfr::ranges::slice_for( adaptor( checked_range ), callable{} );
+    
+    CHECK( std::ranges::equal( checked_range, correct_range ) ); // result is correct
+    
+    CHECK( func.state == std::ranges::size( correct_range ) ); // functor state is accumulated
+    
 }
 
 } // namespace
 
 TEST_CASE( "cfr::ranges::slice_for / fuzzing" ) {
     
-    fuzz_case<std::vector<int>>( std::views::all       );
-    fuzz_case<std::vector<int>>( cfr::views::adapt     );
-    fuzz_case<std::vector<int>>( cfr::views::chunkable );
-    fuzz_case<std::vector<int>>( cfr::views::divisible );
+    ut::fuzz_test( [] { verify<std::vector<int>>( std::views::all       ); } );
+    ut::fuzz_test( [] { verify<std::vector<int>>( cfr::views::adapt     ); } );
+    ut::fuzz_test( [] { verify<std::vector<int>>( cfr::views::chunkable ); } );
+    ut::fuzz_test( [] { verify<std::vector<int>>( cfr::views::divisible ); } );
     
-    fuzz_case<std:: deque<int>>( std::views::all       );
-    fuzz_case<std:: deque<int>>( cfr::views::adapt     );
-    fuzz_case<std:: deque<int>>( cfr::views::chunkable );
-    fuzz_case<std:: deque<int>>( cfr::views::divisible );
+    ut::fuzz_test( [] { verify<std:: deque<int>>( std::views::all       ); } );
+    ut::fuzz_test( [] { verify<std:: deque<int>>( cfr::views::adapt     ); } );
+    ut::fuzz_test( [] { verify<std:: deque<int>>( cfr::views::chunkable ); } );
+    ut::fuzz_test( [] { verify<std:: deque<int>>( cfr::views::divisible ); } );
     
-    fuzz_case<std::  list<int>>( cfr::views::adapt     );
-    fuzz_case<std::  list<int>>( cfr::views::chunkable );
-    fuzz_case<std::  list<int>>( cfr::views::divisible );
+    ut::fuzz_test( [] { verify<std::  list<int>>( cfr::views::adapt     ); } );
+    ut::fuzz_test( [] { verify<std::  list<int>>( cfr::views::chunkable ); } );
+    ut::fuzz_test( [] { verify<std::  list<int>>( cfr::views::divisible ); } );
     
 }

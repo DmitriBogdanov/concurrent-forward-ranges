@@ -76,6 +76,12 @@ namespace cfr::ranges {
 
 struct slice_for_fn {
     
+    // Parallel loop backend.
+    //
+    //    Subdivides `range` into slices and invokes `func( auto && slice )` concurrently for all slices.
+    //
+    //    Effectively replicates `tbb::parallel_for()` but with `constexpr` and additional range support.
+    //
     template <class R, class F>
         requires cfr::ranges::parallel_range<R> && std::invocable<F, std::ranges::borrowed_subrange_t<R>>
     constexpr auto operator()( R && range, F func ) const
