@@ -5,7 +5,7 @@
 
 #pragma once
 
-// Content: Common unit test include
+// Content: Common unit test include.
 
 #define DOCTEST_CONFIG_VOID_CAST_EXPRESSIONS
 // makes `CHECK_THROWS()` not warn for discarding [[nodiscard]]
