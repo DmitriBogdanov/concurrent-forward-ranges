@@ -57,7 +57,7 @@ public:
     
     // Subdivision API
     
-    constexpr tbb_compatible_view( tbb_compatible_view & other, tbb::split ) : range( other.split() ) {}
+    constexpr tbb_compatible_view( tbb_compatible_view & other, tbb::split ) : range( other.range.split() ) {}
     
     [[nodiscard]] constexpr bool is_divisible() const noexcept { return this->range.is_divisible(); }
     
