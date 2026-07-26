@@ -40,7 +40,7 @@ struct callable {
     std::size_t state = 0;
     
     void operator()( auto && value ) { 
-        value += 10; ut::atomic_increment( state );
+        value += 10; ut::atomic_increment( this->state );
     }
 };
 

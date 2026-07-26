@@ -8,7 +8,7 @@
 // Content: Parallel standard algorithm.
 
 #include <algorithm>  // std::ranges::for_each, std::ranges::in_fun_result<>, std::ranges::borrowed_iterator_t<>, ...
-#include <functional> // std::ref()
+#include <functional> // std::ref(), std::identity
 #include <utility>    // std::forward(), std::move()
 
 #include <cfr/backend/slice_for.hpp>      // cfr::ranges::slice_for

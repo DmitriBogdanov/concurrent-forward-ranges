@@ -21,6 +21,9 @@ struct automatic_grain_fn {
     [[nodiscard]] constexpr auto operator()( R && range ) const
         -> std::size_t
     {
+        if consteval { return cfr::ranges::explicit_size( range ); }
+            // compile-time context acts a single-threaded, put everything into one grain
+        
         const std::size_t workers = cfr::current_concurrency();
             // in case task arena is not yet initialized, TBB will try to return hardware concurrency
         
