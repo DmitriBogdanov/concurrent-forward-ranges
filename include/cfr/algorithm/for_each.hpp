@@ -5,7 +5,7 @@
 
 #pragma once
 
-// Content: Parallel standard algorithm.
+// Content: Parallel implementation of `std::ranges::for_each`.
 
 #include <algorithm>  // std::ranges::for_each, std::ranges::in_fun_result<>, std::ranges::borrowed_iterator_t<>, ...
 #include <functional> // std::ref(), std::identity
