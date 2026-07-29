@@ -64,7 +64,7 @@ TEST_CASE( "cfr::views::chunkable / subdivision" ) {
     
     STATIC_CHECK( cfr::views::chunkable( range ).chunk() );
     
-    STATIC_CHECK( cfr::views::chunkable( range ).is_chunkable() );
+    STATIC_CHECK( ut::discard( cfr::views::chunkable( range ).is_chunkable() ) );
     
     STATIC_CHECK( cfr::views::chunkable( range ).grain_size() );
     

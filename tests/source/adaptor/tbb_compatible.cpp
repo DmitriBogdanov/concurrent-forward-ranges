@@ -73,7 +73,7 @@ TEST_CASE( "cfr::views::tbb_compatible / subdivision" ) {
     
     constexpr auto range = std::array{ 10, 20, 30 };
     
-    static_assert( tbb_adapt( cfr_adapt( range ) ).is_divisible() );
+    static_assert( ut::discard( tbb_adapt( cfr_adapt( range ) ).is_divisible() ) );
     
     static_assert( tbb_adapt( cfr_adapt( range ) ).grainsize() );
     

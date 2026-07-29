@@ -26,4 +26,6 @@
 
 namespace ut {
     using namespace doctest;
+    
+    template <class T> constexpr bool discard( T && ) { return true; }
 }
