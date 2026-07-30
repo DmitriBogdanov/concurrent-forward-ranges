@@ -5,17 +5,62 @@
 
 **CFR** is a library of concurrent range algorithms that implements most of C++20 [`<algorithm>`](https://en.cppreference.com/cpp/header/algorithm) and a range-based version of [`<numeric>`](https://en.cppreference.com/cpp/header/numeric).
 
-The core feature of this library is its first class support of different parallelization strategies and "weird" iterator types and that mostly get ignored by existing concurrency frameworks, this makes it distinctly different from the parallel range algorithms proposal [P3179R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p3179r5.html).
+The core feature of this library is its first class support of various [parallelization strategies](#motivation) and explicit control over the execution. This makes it distinctly different from the parallel range algorithms standardized in C++26 (based on [P3179R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p3179r5.html)).
 
 Internally the library relies on OneTBB as its parallelism backend due to its wide industry adoption, in many codebases TBB is a de-facto standard way of concurrent execution with special tools developed specifically for its threads, ranges and task arenas.
 
 > [!Tip]
-> Use GitHub's built-in [table of contents](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) to navigate this page.
-
-> [!Tip]
 > Usage examples can be found [below](#basic-examples). Full API documentation can be found the [website]().
 
-## Accepted ranges
+## Motivation
+
+Existing parallel algorithm implementations are usually limited to nothing but random access iterators, this is a very limiting requirement that makes them incompatible with a wide range of useful data structures. In reality a lot of these data structures do very much support efficient parallelization, we just need to tell the algorithms how to subdivide their data correctly:
+
+| Data structures | Efficient subdivision |
+| - | - |
+| Octrees, R-Trees, KD-Trees | Recursive |
+| Spatial hashes | Bucket-based |
+| Unordered flat maps | Segmented |
+| Sparse index arenas & ECSs | Fast midpoint |
+| Lists & Sparse views | Linear chunking |
+
+C++20 ranges give us a perfect mechanism to do exactly that, using ranges themselves as a customization point for work subdivision (approach inspired by [TBB]() splittable objects) we can achieve a practically 1-to-1 compatibility with regular algorithm syntax while enabling their concurrent use with a whole bunch of additional data structures. 
+
+Fundamentally, range is an **inherently more powerful abstraction** than just a pair of iterators, a range can carry its:
+
+- Size
+- Grain
+- Strategy
+- Payload
+
+For example, parallel algorithms highly benefit from the fact that most ranges in the wild have an `O( 1 )` size, even through their iterator pair might not support `O( 1 )` difference, knowing the size we can better select automatic grain size and perform initial subdivision.
+
+Additionally, lazy evaluation and zero-copy views into data allows us to run parallel algorithms like a sort of "execution pipeline" without having to assemble the data into its own data structure beforehand (like it's frequently done to work around the iterator limitations).
+
+## Design goals
+
+### API goals
+
+- All algorithms (and related functionality) should support `constexpr` evaluation
+- Library API should follow conventions and style of the standard library
+- TBB usage should be easily compatible with the library, but not leak into its core API
+- Potentially slow operations should not happen implicitly, there must be an explicit opt-in
+
+### Quality goals
+
+- Performance characteristics should be confirmed though benchmark coverage
+- Algorithms should have proper test coverage and pass basic fuzzing
+- API reference should fully cover the functionality and provide the examples
+
+### Differences relative to `std`
+
+- Output iterators are replaced with output ranges to enable bounded writing
+- Reductions and scans use identity values instead of init values for better concurrency
+- Algorithm functions and projections should be thread-safe to invoke
+
+## Parallelizable ranges
+
+### Range concepts
 
 Most `cfr` algorithms can operate on 4 kinds of ranges:
 
@@ -26,42 +71,17 @@ Most `cfr` algorithms can operate on 4 kinds of ranges:
 
 Additionally, all ranges are required to be bounded and forward-iterable to allow multiple passes.
 
-Any range that doesn't belong to one of these categories (aka any general range like `std::list` or `boost::unordered_flat_map`) can be automatically adapted using `cfr::views::adapt( range )` helper.
+Any range that doesn't belong to one of these categories (aka any general range like `std::list` or `boost::unordered_flat_map`) can be automatically adapted using `cfr::views::adapt( range )`, while this helper cannot know the truly "optimal" way to split its underlying container, in most cases we can still parallelize decently well with its built-in general strategies.
 
-This is a significantly relaxed requirement compared to most parallel STL implementations which tend to ignore parallel execution policies unless given range provides random access. Additionally, even if forward range parallelization is supported, there is usually no way of providing an explicit grain size, thread count and subdivision strategy, which are all crucial parts of getting robust performance characteristics outside of trivial examples.
-
-## Ranges in relation to parallelism
-
-Range is an **inherently more powerful abstraction** than a corresponding pair of iterators, a range can carry its:
-
-- Size
-- Grain
-- Subdivision strategy
-- Arbitrary payload
-
-This allows parallel range algorithms to extend beyond the trivial index-based random access approach usually taken with iterators.
-
-With ranges and lazy projections we can construct entire parallel evaluation pipelines while making use of concise C++20 syntax and still keep the ability to adjust execution details through the parameters of the range itself. Additionally, parallel algorithms highly benefit from the fact that most ranges in the wild have an `O( 1 )` size, even through their iterator pair don't support `O( 1 )` difference (this applies to the overwhelming majority of containers).
-
-## Implementation design choices
-
-- All algorithms (and other library functionality) can be evaluated in `constexpr` context
-- Library API strictly follows conventions and style of the standard library
-- Output iterators are replaced with output ranges to enable concurrent writing
-- Reductions and scans use identity values instead of init values for better concurrency
-- Potentially slow operations require explicit opt-in from the user
-- All API is constrained through appropriate concepts
-- TBB usage is "compatible" but not explicitly exposed in any of the library API
-
-## Customizing grain
+### Customizing grain
 
 Grain size can be passed as an optional second parameter to `cfr::views::adapt( range, grain )`.
 
 By default, reasonable grain size is estimated based on the range size and current concurrency level. In case `range` doesn't support `O( 1 )` size computation, the library will prohibit this overload and require that user provides grain size explicitly to avoid accidental `O( N )` evaluation. If automatic grain is desired regardless it can be provided explicitly using `cfr::views::adapt( range, cfr::ranges::automatic_grain( range ) )`.
 
-In case given range is already adapted to subdivide in a certain way, the grain argument will be ignored.
+In case given range is already adapted to subdivide in a certain way, the range will be forwarded and the grain argument will be ignored.
 
-## Customizing thread count
+### Customizing thread count
 
 Concurrency level can be set locally for the code block:
 
@@ -79,9 +99,9 @@ tbb::task_arena{ thread_count }.run( [&]{
 } );
 ```
 
-## Customizing subdivision strategy
+### Customizing subdivision strategy
 
-### Divisible ranges
+#### Divisible ranges
 
 Divisible ranges split through recursive subdivision.
 
@@ -108,7 +128,7 @@ To adapt arbitrary range explicitly into a divisible one use `cfr::views::divisi
 
 Note that doing so for ranges without random access is generally ill-advised as those cases are better served by a similar linear chunking adaptor.
 
-### Chunkable ranges
+#### Chunkable ranges
 
 Chunkable ranges split through linear subdivision.
 
@@ -137,11 +157,17 @@ Note that return type of `chunk()` doesn't have to match the original range. We 
 
 Worst-case scenario cost of parallelization when using `cfr::views::chunkable` adaptor is an additional `O( N )` iteration pass (so we can distribute initial tasks). Assuming the workload per iteration is higher than the cost of iteration itself (which is usually the case) we can still get a decently large benefit from parallelization even when working with exceedingly "bad" ranges such as `std::list`.
 
-## Advanced details
+### Advanced details
 
 A range can be both chunkable and divisible at the same time, in that case it's up to the algorithms to decide which strategy they prefer.
 
-Additionally, ranges can provide an optional method for querying `grainsize()`, some algorithms will make use of it to improve their internal heuristics. For example, algorithms that zip & subdivide multiple ranges in-sync will pick their max grain based on the `grainsize()` if it's available.
+Additionally, ranges can provide an optional method for querying `grain_size()`, some algorithms can make use of it to improve their internal heuristics.
+
+> [!Tip]
+> When implementing custom parallel ranges, inherit [`std::ranges::view_interface<>`]() CRTP to generate all the range boilerplate based on `begin()` / `end()`. 
+
+> [!Tip]
+> If your range is non-owning view, specialize [`std::ranges::enable_borrowed_range<>`]() to make it compatible with standard borrowed iterator safeguards. 
 
 ## Basic Examples
 
@@ -150,7 +176,7 @@ Additionally, ranges can provide an optional method for querying `grainsize()`, 
 ```cpp
 const auto range = vector{ 0, 1, 2, 3, 4, 5 };
 
-cfr::ranges::for_each( range, []( auto & x ) { x += 1; });
+cfr::ranges::for_each( range, []( auto & x ) { x += 1; } );
 ```
 
 ### Find max element by a member
@@ -158,7 +184,7 @@ cfr::ranges::for_each( range, []( auto & x ) { x += 1; });
 ```cpp
 struct vec3 { double x, y, z };
 
-const auto range = std::vector<vec3>{ { 2., 3., 4. }, { 5., 7., 6. }, { 9., 2., 3. } };
+const auto range = std::vector<vec3>{ { 2., 3., 4. }, { 5., 7., 6. } };
 
 const auto max = cfr::ranges::max( range, std::less{}, &vec3::x );
 ```
@@ -274,7 +300,7 @@ cfr::ranges::for_each( cfr::ranges::adapt( range, 1000 ), []( auto & x ) { x = s
 
 ### Regular build
 
-The library is header only, as such it exposes an `INTERFACE` target, linking is as simple as:
+The library itself is header only, as such it exposes an `INTERFACE` target, linking is as simple as:
 
 ```cmake
 add_subdirectory( concurrent-forward-ranges )
@@ -282,7 +308,7 @@ add_subdirectory( concurrent-forward-ranges )
 target_link_libraries( my_project PRIVATE cfr::lib )
 ```
 
-TBB dependency is fetched **automatically** using [CMake CPM](https://github.com/cpm-cmake/cpm.cmake), no further action is required on user side.
+TBB dependency is fetched **automatically** using [CMake CPM](https://github.com/cpm-cmake/cpm.cmake), no further action should be required on user side.
 
 ### Offline build
 
