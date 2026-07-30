@@ -10,6 +10,7 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     "${DEV_UNIT_TEST_SOURCES}/adaptor/tbb_compatible.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/algorithm/for_each.cpp"
+    "${DEV_UNIT_TEST_SOURCES}/algorithm/transform.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/backend/slice_for.cpp"
     
