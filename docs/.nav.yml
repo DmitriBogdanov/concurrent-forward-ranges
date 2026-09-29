@@ -15,7 +15,6 @@ nav:
     - "cfr::views::adapt"                       : x.md
     - "cfr::views::chunkable"                   : x.md
     - "cfr::views::divisible"                   : x.md
-    - "cfr::views::tbb_compatible"              : x.md
   - "Algorithms":
     - "cfr::ranges::for_each"                   : x.md
   - "Backends":
@@ -26,18 +25,17 @@ nav:
     - "cfr::ranges::slice_scan"                 : x.md
   - "Concepts":
     - "cfr::ranges::bounded_range"              : x.md
-    - "cfr::ranges::grained_range"              : x.md
+    - "cfr::ranges::chunkable_range"            : x.md
+    - "cfr::ranges::divisible_range"            : x.md
     - "cfr::ranges::indexable_range"            : x.md
     - "cfr::ranges::parallel_range"             : x.md
+  - "Customization":
+    - "cfr::chunk"                              : x.md
+    - "cfr::split"                              : x.md
   - "Ranges":
     - "cfr::ranges::automatic_grain"            : x.md
     - "cfr::ranges::explicit_size"              : x.md
     - "cfr::ranges::grain_size"                 : x.md
-  - "Requirements":
-    - "cfr::ranges::adapted_range"              : x.md
-    - "cfr::ranges::chunkable_range"            : x.md
-    - "cfr::ranges::divisible_range"            : x.md
-    - "cfr::ranges::tbb_compatible_range"       : x.md
   - "Utility":
     - "cfr::current_concurrency"                : x.md
     - "cfr::hardware_concurrency"               : x.md
