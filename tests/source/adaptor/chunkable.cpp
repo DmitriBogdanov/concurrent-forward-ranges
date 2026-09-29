@@ -57,15 +57,3 @@ TEST_CASE( "cfr::views::chunkable / view interface" ) {
     STATIC_CHECK( cfr::views::chunkable( range )[2] == 30 );
     
 }
-
-TEST_CASE( "cfr::views::chunkable / subdivision" ) {
-    
-    constexpr auto range = std::array{ 10, 20, 30 };
-    
-    STATIC_CHECK( cfr::views::chunkable( range ).chunk() );
-    
-    STATIC_CHECK( ut::discard( cfr::views::chunkable( range ).is_chunkable() ) );
-    
-    STATIC_CHECK( cfr::views::chunkable( range ).grain_size() );
-    
-}

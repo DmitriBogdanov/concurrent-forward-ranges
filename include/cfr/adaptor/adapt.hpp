@@ -14,7 +14,6 @@
 #include <cfr/range/automatic_grain.hpp>            // cfr::ranges::automatic_grain
 #include <cfr/requirement/chunkable_range.hpp>      // cfr::ranges::chunkable_range<>
 #include <cfr/requirement/divisible_range.hpp>      // cfr::ranges::divisible_range<>
-#include <cfr/requirement/tbb_compatible_range.hpp> // cfr::ranges::tbb_compatible_range<>
 
 namespace cfr::views {
 
@@ -36,10 +35,12 @@ struct adapt_fn {
         -> std::ranges::borrowed_range auto
     {
         // Range is already adapted
-        if      constexpr (cfr::ranges::     divisible_range<R>) return std::forward<R>( range );
-        else if constexpr (cfr::ranges::     chunkable_range<R>) return std::forward<R>( range );
-        else if constexpr (cfr::ranges::tbb_compatible_range<R>) return std::forward<R>( range );
+        
+        if /**/ constexpr (cfr::ranges::divisible_range<R>) return std::forward<R>( range );
+        else if constexpr (cfr::ranges::chunkable_range<R>) return std::forward<R>( range );
+        
         // Range requires adaptation
+        
         else if constexpr (cfr::ranges::indexable_range<R>) return cfr::views::divisible( std::forward<R>( range ), grain );
         else                                                return cfr::views::chunkable( std::forward<R>( range ), grain );
     }
@@ -49,11 +50,3 @@ struct adapt_fn {
 inline constexpr auto adapt = adapt_fn{};
 
 } // namespace cfr::views
-
-// Enable compatibility of `tbb::blocked_range<>` with C++20 range concepts, but only if given
-// instantiation is actually a range. In general case `tbb::blocked_range<>` might contain any
-// value as its so-called `const_iterator`, to the point of not even being compatible with
-// `for (auto && e : range)`, let alone standard concepts that require semiregularity.
-template <class I>
-    requires std::ranges::range<tbb::blocked_range<I>>
-inline constexpr bool std::ranges::enable_borrowed_range<tbb::blocked_range<I>> = true;

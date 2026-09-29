@@ -11,12 +11,10 @@
 #include <utility>    // std::forward()
 
 #include <cfr/adaptor/divisible.hpp>                // cfr::views::divisible
-#include <cfr/adaptor/tbb_compatible.hpp>           // cfr::views::tbb_compatible
 #include <cfr/concept/indexable_range.hpp>          // cfr::ranges::indexable_range<>
 #include <cfr/concept/parallel_range.hpp>           // cfr::ranges::parallel_range<>
 #include <cfr/requirement/chunkable_range.hpp>      // cfr::ranges::chunkable_range<>
 #include <cfr/requirement/divisible_range.hpp>      // cfr::ranges::divisible_range<>
-#include <cfr/requirement/tbb_compatible_range.hpp> // cfr::ranges::tbb_compatible_range<>
 
 namespace cfr::ranges::detail {
 
@@ -31,19 +29,16 @@ struct dispatch_backend_fn {
             return std::invoke( serial, std::forward<R>( range ), std::forward<Args>(args)... );
         }
         else {
-            constexpr auto compat = cfr::views::tbb_compatible;
             constexpr auto divide = cfr::views::divisible;
             
-            if constexpr (cfr::ranges::tbb_compatible_range<R>)
-                return std::invoke( native,                 std::forward<R>( range )    , std::forward<Args>(args)... );
-            else if constexpr (cfr::ranges::divisible_range<R>)
-                return std::invoke( native, compat(         std::forward<R>( range )   ), std::forward<Args>(args)... );
+            if /**/ constexpr (cfr::ranges::divisible_range<R>)
+                return std::invoke( native,         std::forward<R>( range )  , std::forward<Args>(args)... );
             else if constexpr (cfr::ranges::chunkable_range<R>)
-                return std::invoke( linear,                 std::forward<R>( range )    , std::forward<Args>(args)... );
+                return std::invoke( linear,         std::forward<R>( range )  , std::forward<Args>(args)... );
             else if constexpr (cfr::ranges::indexable_range<R>)
-                return std::invoke( native, compat( divide( std::forward<R>( range ) ) ), std::forward<Args>(args)... );
+                return std::invoke( native, divide( std::forward<R>( range ) ), std::forward<Args>(args)... );
             else
-                return std::invoke( linear,                 std::forward<R>( range )    , std::forward<Args>(args)... );
+                return std::invoke( linear,         std::forward<R>( range )  , std::forward<Args>(args)... );
         } 
     }  
     

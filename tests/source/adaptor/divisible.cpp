@@ -56,15 +56,3 @@ TEST_CASE( "cfr::views::divisible / view interface" ) {
     STATIC_CHECK( cfr::views::divisible( range )[2] == 30 );
     
 }
-
-TEST_CASE( "cfr::views::divisible / subdivision" ) {
-    
-    constexpr auto range = std::array{ 10, 20, 30 };
-    
-    static_assert( cfr::views::divisible( range ).split() );
-    
-    static_assert( ut::discard( cfr::views::divisible( range ).is_divisible() ) );
-    
-    static_assert( cfr::views::divisible( range ).grain_size() );
-    
-}

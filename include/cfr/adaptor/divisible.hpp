@@ -10,6 +10,7 @@
 #include <iterator> // std::forward_iterator<>, std::ranges::next
 #include <ranges>   // std::ranges::view_interface<>, std::ranges::subrange<>
 
+#include <cfr/customization/split.hpp>   // cfr::split<>
 #include <cfr/range/automatic_grain.hpp> // cfr::ranges::automatic_grain
 #include <cfr/range/explicit_size.hpp>   // cfr::ranges::explicit_size
 
@@ -37,7 +38,7 @@ struct divisible_view : std::ranges::view_interface<divisible_view<I>> {
     using iterator_type = I;
     using     size_type = std::size_t;
    
-protected: 
+public: /// TODO: Figure out how to hide it from public, but expose to `cfr::split`
     
     iterator_type borrowed_beg;
     iterator_type borrowed_end;
@@ -66,35 +67,44 @@ public:
     [[nodiscard]] constexpr auto begin() const { return this->borrowed_beg; }
     [[nodiscard]] constexpr auto end  () const { return this->borrowed_end; }
     
-    // Subdivision API
+};
+
+} // namespace cfr::ranges
+
+template <std::forward_iterator I>
+struct cfr::split<cfr::ranges::divisible_view<I>> {
     
-    [[nodiscard]] constexpr auto split() {
+    using view_type = cfr::ranges::divisible_view<I>;
+    using size_type = typename view_type::size_type;
+    
+    [[nodiscard]] static constexpr auto subdivide( view_type & range )
+        -> view_type
+    {
         const size_type beg_offset = size_type( 0 );
-        const size_type end_offset = this->cached_count;
-        const size_type mid_offset = this->cached_count / size_type( 2 );
+        const size_type end_offset = range.cached_count;
+        const size_type mid_offset = range.cached_count / size_type( 2 );
         
         const size_type former_count = mid_offset - beg_offset;
         const size_type latter_count = end_offset - mid_offset;
         
-        auto mid = std::ranges::next( this->borrowed_beg, former_count );
-        auto end =                    this->borrowed_end                ;
+        auto mid = std::ranges::next( range.borrowed_beg, former_count );
+        auto end =                    range.borrowed_end                ;
         
-        this->borrowed_end = mid;
-        this->cached_count = former_count;
+        range.borrowed_end = mid;
+        range.cached_count = former_count;
         
-        return divisible_view{ std::move( mid ), std::move( end ), latter_count, this->cached_grain };
+        return view_type{ std::move( mid ), std::move( end ), latter_count, range.cached_grain };
         
         // Note: Following TBB convention, new segment splits on the right.
     }
     
-    [[nodiscard]] constexpr bool is_divisible() const noexcept { return this->cached_count > this->cached_grain; }
+    [[nodiscard]] static constexpr auto subdivisible( const view_type & range )
+        -> bool
+    {
+        return range.cached_count > range.cached_grain;
+    }
     
-    // Additional API
-    
-    [[nodiscard]] constexpr size_type grain_size() const noexcept { return this->cached_grain; }
 };
-
-} // namespace cfr::ranges
 
 namespace cfr::views {
     
@@ -129,7 +139,7 @@ struct divisible_fn {
 };
 
 inline constexpr auto divisible = divisible_fn{};
-    
+
 } // namespace cfr::views
 
 template <class I>

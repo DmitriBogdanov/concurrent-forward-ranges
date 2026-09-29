@@ -52,17 +52,6 @@ TEST_CASE( "cfr::view::adapt / preserve cfr::ranges::chunkable_range<>" ) {
     
 }
 
-TEST_CASE( "cfr::view::adapt / preserve cfr::ranges::tbb_compatible_range<>" ) {
-    
-    auto data = std::array{ 0, 1, 2, 3, 4 };
-    
-    auto range = tbb::blocked_range{ data.begin(), data.end() };
-    
-    static_assert( cfr::ranges::tbb_compatible_range<decltype( cfr::views::adapt( range ) )> ); // should preserve kind
-    static_assert( std::ranges::      borrowed_range<decltype( cfr::views::adapt( range ) )> ); // should borrow
-    
-}
-
 TEST_CASE( "cfr::view::adapt / adapt std::ranges::random_access_range<>" ) {
     
     auto range = std::array{ 0, 1, 2, 3, 4 };

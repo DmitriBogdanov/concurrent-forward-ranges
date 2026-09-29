@@ -15,11 +15,12 @@
 #include <tbb/parallel_for.h> // tbb::parallel_for()
 #include <tbb/task_group.h>   // tbb::task_group
 
-#include <cfr/concept/bounded_range.hpp>            // cfr::ranges::bounded_range<>
-#include <cfr/concept/parallel_range.hpp>           // cfr::ranges::parallel_range<>
-#include <cfr/detail/dispatch_backend.hpp>          // cfr::ranges::detail::dispatch_backend
-#include <cfr/requirement/chunkable_range.hpp>      // cfr::ranges::chunkable_range<>
-#include <cfr/requirement/tbb_compatible_range.hpp> // cfr::ranges::tbb_compatible_range<>
+#include <cfr/concept/bounded_range.hpp>       // cfr::ranges::bounded_range<>
+#include <cfr/concept/parallel_range.hpp>      // cfr::ranges::parallel_range<>
+#include <cfr/detail/dispatch_backend.hpp>     // cfr::ranges::detail::dispatch_backend
+#include <cfr/detail/tbb_compatible.hpp>       // cfr::views::detail::tbb_compatible
+#include <cfr/requirement/chunkable_range.hpp> // cfr::ranges::chunkable_range<>
+#include <cfr/requirement/divisible_range.hpp> // cfr::ranges::divisible_range<>
 
 namespace cfr::ranges::detail {
 
@@ -40,11 +41,11 @@ inline constexpr auto serial_slice_for = serial_slice_for_fn{};
 struct native_slice_for_fn {
     
     template <class R, class F>
-        requires cfr::ranges::tbb_compatible_range<R> && std::invocable<F, std::ranges::borrowed_subrange_t<R>>
+        requires cfr::ranges::divisible_range<R> && std::invocable<F, std::ranges::borrowed_subrange_t<R>>
     /* not constexpr */ auto operator()( R && range, F func ) const
         -> void
     {
-        tbb::parallel_for( std::forward<R>( range ), func );
+        tbb::parallel_for( cfr::views::detail::tbb_compatible( std::forward<R>( range ) ), func );
     }
     
 };
@@ -60,8 +61,10 @@ struct linear_slice_for_fn {
     {
         tbb::task_group group;
         
-        while (range.is_chunkable())
-            group.run( [slice = range.chunk(), &func] { std::invoke( func, std::move( slice ) ); } );
+        using policy = cfr::chunk<std::remove_cvref_t<R>>;
+        
+        while ( policy::subdivisible( range ))
+            group.run( [slice = policy::subdivide( range ), &func] { std::invoke( func, std::move( slice ) ); } );
         
         group.wait();
     }

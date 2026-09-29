@@ -11,7 +11,7 @@
 #include <ranges>   // std::ranges::view_interface<>, std::ranges::subrange<>
 #include <utility>  // std::exchange()
 
-#include <cfr/concept/bounded_range.hpp> // cfr::ranges::bounded_range<>
+#include <cfr/customization/chunk.hpp>   // cfr::chunk<>
 #include <cfr/range/automatic_grain.hpp> // cfr::ranges::automatic_grain
 
 namespace cfr::ranges {
@@ -36,7 +36,7 @@ struct chunkable_view : std::ranges::view_interface<chunkable_view<I, S>> {
     using sentinel_type = S;
     using     size_type = std::size_t;
     
-protected:
+public: /// TODO: Figure out how to hide it from public, but expose to `cfr::chunk`
 
     iterator_type borrowed_beg;
     sentinel_type borrowed_end;
@@ -63,24 +63,34 @@ public:
     [[nodiscard]] constexpr auto begin() const { return this->borrowed_beg; }
     [[nodiscard]] constexpr auto end  () const { return this->borrowed_end; }
     
-    // Subdivision API
+};
+
+} // namespace cfr::ranges
+
+
+template <std::forward_iterator I, std::sentinel_for<I> S>
+struct cfr::chunk<cfr::ranges::chunkable_view<I, S>> {
     
-    [[nodiscard]] constexpr auto chunk() {
-        auto mid = std::ranges::next( this->borrowed_beg, this->cached_grain, this->borrowed_end );
+    using view_type = cfr::ranges::chunkable_view<I>;
+    using size_type = typename view_type::size_type;
+    
+    [[nodiscard]] static constexpr auto subdivide( view_type & range )
+        -> std::ranges::borrowed_subrange_t<view_type>
+    {
+        auto mid = std::ranges::next( range.borrowed_beg, range.cached_grain, range.borrowed_end );
         
-        auto beg = std::exchange( this->borrowed_beg, mid );
+        auto beg = std::exchange( range.borrowed_beg, mid );
         
         return std::ranges::subrange{ std::move( beg ), std::move( mid ) };
     }
     
-    [[nodiscard]] constexpr bool is_chunkable() const noexcept { return this->borrowed_beg != this->borrowed_end; }
+    [[nodiscard]] static constexpr auto subdivisible( const view_type & range )
+        -> bool
+    {
+        return range.borrowed_beg != range.borrowed_end;
+    }
     
-    // Additional API
-    
-    [[nodiscard]] constexpr size_type grain_size() const noexcept { return this->cached_grain; }
 };
-
-} // namespace cfr::ranges
 
 namespace cfr::views {
 

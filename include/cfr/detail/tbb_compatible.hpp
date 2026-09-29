@@ -5,17 +5,17 @@
 
 #pragma once
 
-// Content: View that adapts `cfr::ranges::divisible_range<>` into a TBB-compatible range.
+// Content: Creation of TBB-compatible ranges from `cfr::split<>`.
 
-#include <ranges> // std::ranges::iterator_t<>
+#include <ranges>  // std::ranges::iterator_t<>
 #include <utility> // std::forward()
 
 #include <tbb/blocked_range.h> // tbb::split
 
-#include <cfr/range/grain_size.hpp>            // cfr::ranges::grain_size
-#include <cfr/requirement/divisible_range.hpp> // cfr::ranges::divisible_range<>
+#include <cfr/customization/split.hpp>         // cfr::split<>
+#include <cfr/requirement/divisible_range.hpp> // cr::ranges::divisible_range<>
 
-namespace cfr::ranges {
+namespace cfr::ranges::detail {
 
 // Thin wrapper over a divisible range that adapts it to TBB range requirements.
 //
@@ -29,12 +29,14 @@ namespace cfr::ranges {
 template <cfr::ranges::divisible_range V>
 struct tbb_compatible_view : std::ranges::view_interface<tbb_compatible_view<V>> {
     
+    using view_type = V;
+    using size_type = std::size_t;
+    
     using iterator_type = std::ranges::iterator_t<V>;
-    using     size_type = std::size_t;
     
 protected:
     
-    V range;
+    view_type range;
     
 public:
     
@@ -57,34 +59,32 @@ public:
     
     // Subdivision API
     
-    constexpr tbb_compatible_view( tbb_compatible_view & other, tbb::split ) : range( other.range.split() ) {}
+    constexpr tbb_compatible_view( tbb_compatible_view & other, tbb::split ) :
+        range( cfr::split<view_type>::subdivide( other.range ) )
+    {}
     
-    [[nodiscard]] constexpr bool is_divisible() const noexcept { return this->range.is_divisible(); }
-    
-    // Additional API
-    
-    [[nodiscard]] constexpr size_type grainsize() const noexcept { return cfr::ranges::grain_size( this->range ); }
+    [[nodiscard]] constexpr bool is_divisible() const noexcept {
+        return cfr::split<view_type>::subdivisible( this->range );
+    }
     
 };
 
-} // namespace cfr::ranges
+} // namespace cfr::ranges::detail
 
-namespace cfr::views {
-    
+namespace cfr::views::detail {
+
 struct tbb_compatible_fn {
     
     template <class R>
+        requires cfr::ranges::divisible_range<R>
     [[nodiscard]] constexpr auto operator()( R && range ) const
-        -> cfr::ranges::tbb_compatible_view<std::remove_cvref_t<R>>
+        -> cfr::ranges::detail::tbb_compatible_view<R>
     {
-        return cfr::ranges::tbb_compatible_view<std::remove_cvref_t<R>>( std::forward<R>( range ) );
+        return cfr::ranges::detail::tbb_compatible_view<R>{ std::forward<R>( range ) };
     }
     
 };
 
 inline constexpr auto tbb_compatible = tbb_compatible_fn{};
-    
-} // namespace cfr::views
 
-template <class R>
-inline constexpr bool std::ranges::enable_borrowed_range<cfr::ranges::tbb_compatible_view<R>> = true;
+} // namespace cfr::views::detail

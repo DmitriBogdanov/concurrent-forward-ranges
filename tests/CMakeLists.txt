@@ -7,7 +7,6 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     "${DEV_UNIT_TEST_SOURCES}/adaptor/adapt.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/chunkable.cpp"
     "${DEV_UNIT_TEST_SOURCES}/adaptor/divisible.cpp"
-    "${DEV_UNIT_TEST_SOURCES}/adaptor/tbb_compatible.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/algorithm/for_each.cpp"
     "${DEV_UNIT_TEST_SOURCES}/algorithm/transform.cpp"
@@ -18,9 +17,6 @@ add_executable( ${DEV_UNIT_TEST_TARGET}
     
     "${DEV_UNIT_TEST_SOURCES}/range/automatic_grain.cpp"
     "${DEV_UNIT_TEST_SOURCES}/range/explicit_size.cpp"
-    "${DEV_UNIT_TEST_SOURCES}/range/grain_size.cpp"
-    
-    "${DEV_UNIT_TEST_SOURCES}/requirement/tbb_compatible_range.cpp"
     
     "${DEV_UNIT_TEST_SOURCES}/utility/current_concurrency.cpp"
     "${DEV_UNIT_TEST_SOURCES}/utility/invoke_with_concurrency.cpp"
